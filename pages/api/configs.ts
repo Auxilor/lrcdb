@@ -1,8 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import yaml from "js-yaml"
 import { Config, PrismaClient } from "@prisma/client"
+import { parseQuery } from "../../lib/queries"
 
 const prisma = new PrismaClient()
+
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -78,25 +80,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       message: `Added ${id} for ${plugin}!`
     })
   } else if (req.method === 'GET') {
-    const plugin: string = req.body.plugin
-    const limit = req.body.limit || 50
+    const getSingle = (param: string | string[] | undefined): string | undefined => {
+      if (param === undefined) {
+        return param
+      }
 
-    let configs: Array<Config> = []
+      if (typeof param === 'string') {
+        return param
+      }
 
-    if (plugin === undefined) {
-      configs = await prisma.config.findMany({
-        take: limit
-      })
-    } else {
-      configs = await prisma.config.findMany({
-        take: limit,
-        where: {
-          plugin: {
-            equals: plugin.toLowerCase()
-          }
-        }
-      })
+      return (param as string[]).pop()
     }
+
+    const plugin: string = getSingle(req.query.plugin) || ""
+    const query = getSingle(req.query.query) || null
+    const limit: number = parseInt(getSingle(req.query.limit) || "50")
+
+    const configs: Config[] = []
+
+    if (query != null) {
+      configs.push(
+        ...(await parseQuery(query))
+      )
+    } else if (plugin.length >= 1) {
+      configs.push(
+        ...(await prisma.config.findMany({
+          take: limit,
+          where: {
+            plugin: {
+              equals: plugin
+            }
+          }
+        }))
+      )
+    } else {
+      configs.push(
+        ...(await prisma.config.findMany({}))
+      )
+    }
+
 
     res.status(200).json({
       configs: configs.map(config => {
