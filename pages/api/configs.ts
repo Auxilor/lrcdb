@@ -1,19 +1,19 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import yaml from "js-yaml"
-import { Config, PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
 
 const prisma = new PrismaClient()
 
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
-    const id = req.body.id
+    const name = req.body.name
     const plugin = req.body.plugin
-    const config = req.body.config
+    const contents = req.body.contents
 
-    if (id === undefined) {
+    if (name === undefined) {
       res.status(400).json({
-        message: "Didn't get a config ID!"
+        message: "Didn't get a config name!"
       })
       return
     }
@@ -25,15 +25,15 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    if (config === undefined) {
+    if (contents === undefined) {
       res.status(400).json({
-        message: "Didn't get a config!"
+        message: "Didn't get any contents!"
       })
       return;
     }
 
     try {
-      yaml.load(config)
+      yaml.load(contents)
     } catch (e) {
       res.status(400).json({
         message: "Invalid config!"
@@ -46,7 +46,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         AND: [
           {
             contents: {
-              equals: config
+              equals: contents
             }
           },
           {
@@ -69,14 +69,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     await prisma.config.create({
       data: {
-        name: id,
+        name: name,
         plugin: plugin.toLowerCase(),
-        contents: config
+        contents: contents
       }
     })
 
     res.status(201).json({
-      message: `Added ${id} for ${plugin}!`
+      message: `Added ${name} for ${plugin}!`
     })
   } else if (req.method === 'GET') {
     const getSingle = (param: string | string[] | undefined): string | undefined => {
@@ -120,9 +120,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({
       configs: configs.map(config => {
         return {
-          id: config.name,
+          name: config.name,
           plugin: config.plugin,
-          config: config.contents
+          contents: config.contents
         }
       })
     })

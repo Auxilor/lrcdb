@@ -1,7 +1,8 @@
-import { Option, Select } from "@mui/joy";
+
 import { useEffect, useState } from "react"
-import ConfigSelector from "../components/ConfigSelector";
-import { plugins } from "../lib/plugins"
+import ConfigCard from "../components/ConfigCard";
+
+
 
 export default function Home() {
   const [configs, setConfigs] = useState([])
@@ -20,6 +21,7 @@ export default function Home() {
     updateConfigs()
   })
 
+  /*
   return (
     <div className="flex justify-center h-screen">
       <div className="flex flex-col">
@@ -45,5 +47,15 @@ export default function Home() {
         <ConfigSelector configs={configs} />
       </div>
     </div>
+  )
+  */
+  return (
+    <>
+      <ConfigCard config={{
+        name: "excavation",
+        plugin: "EcoEnchants",
+        contents: "some yaml data"
+      }} />
+    </>
   )
 }
