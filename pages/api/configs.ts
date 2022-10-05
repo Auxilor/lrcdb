@@ -1,7 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import yaml from "js-yaml"
 import { Config, PrismaClient } from "@prisma/client"
-import { parseQuery } from "../../lib/queries"
 
 const prisma = new PrismaClient()
 
@@ -92,33 +91,31 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return (param as string[]).pop()
     }
 
-    const plugin: string = getSingle(req.query.plugin) || ""
-    const query = getSingle(req.query.query) || null
+    const plugin = getSingle(req.query.plugin)
+    const query = getSingle(req.query.query) || ""
     const limit: number = parseInt(getSingle(req.query.limit) || "50")
 
-    const configs: Config[] = []
-
-    if (query != null) {
-      configs.push(
-        ...(await parseQuery(query))
-      )
-    } else if (plugin.length >= 1) {
-      configs.push(
-        ...(await prisma.config.findMany({
-          take: limit,
-          where: {
-            plugin: {
-              equals: plugin
-            }
-          }
-        }))
-      )
-    } else {
-      configs.push(
-        ...(await prisma.config.findMany({}))
-      )
+    if (plugin === undefined) {
+      res.status(400).json({
+        message: "You must specify a plugin!"
+      })
+      return
     }
 
+    const configs = (await prisma.config.findMany({
+      take: limit,
+      where: {
+        plugin: {
+          equals: plugin.toLowerCase()
+        }
+      }
+    })).filter(config => {
+      if (query.length === 0) {
+        return true
+      }
+
+      return config.name.toLowerCase().includes(query.toLowerCase())
+    })
 
     res.status(200).json({
       configs: configs.map(config => {

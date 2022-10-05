@@ -9,6 +9,9 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@emotion/react": "^11.10.4",
+    "@emotion/styled": "^11.10.4",
+    "@mui/joy": "^5.0.0-alpha.48",
     "@prisma/client": "4.4.0",
     "autoprefixer": "^10.4.12",
     "js-yaml": "^4.1.0",
