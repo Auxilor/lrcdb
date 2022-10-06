@@ -1,52 +1,52 @@
 interface Plugin {
     name: string,
-    image: HTMLImageElement
+    image: string
 }
 
 export const plugins: Plugin[] = [
     {
         name: "EcoEnchants",
-        image: require("../assets/images/ecoenchants.png")
+        image: "https://i.imgur.com/bF6y4xz.png"
     },
     {
         name: "EcoBosses",
-        image: require("../assets/images/ecobosses.png")
+        image: "https://i.imgur.com/NfHn90A.png"
     },
     {
         name: "Talismans",
-        image: require("../assets/images/talismans.png")
+        image: "https://i.imgur.com/B512GRQ.png"
     },
     {
         name: "EcoArmor",
-        image: require("../assets/images/ecoarmor.png")
+        image: "https://i.imgur.com/lJkjcQQ.png"
     },
     {
         name: "EcoItems",
-        image: require("../assets/images/ecoitems.png")
+        image: "https://i.imgur.com/qJLnOW2.png"
     },
     {
         name: "Reforges",
-        image: require("../assets/images/reforges.png")
+        image: "https://i.imgur.com/YEVnsGW.png"
     },
     {
         name: "EcoSkills",
-        image: require("../assets/images/ecoskills.png")
+        image: "https://i.imgur.com/STRh0rl.png"
     },
     {
         name: "Boosters",
-        image: require("../assets/images/boosters.png")
+        image: "https://i.imgur.com/cNsrhU9.png"
     },
     {
         name: "EcoPets",
-        image: require("../assets/images/ecopets.png")
+        image: "https://i.imgur.com/uflkTN3.png"
     },
     {
         name: "EcoJobs",
-        image: require("../assets/images/ecojobs.png")
+        image: "https://i.imgur.com/HgHcjYe.png"
     },
     {
         name: "Actions",
-        image: require("../assets/images/actions.png")
+        image: "https://i.imgur.com/XBpZRQj.png"
     }
 ]
 

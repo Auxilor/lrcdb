@@ -67,11 +67,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return
     }
 
+    const token = await fetch('https://paste.willfp.com/documents', {
+      method: 'POST',
+      body: contents
+    })
+
     await prisma.config.create({
       data: {
         name: name,
         plugin: plugin.toLowerCase(),
-        contents: contents
+        contents: contents,
+        token: token
       }
     })
 

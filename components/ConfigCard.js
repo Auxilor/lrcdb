@@ -1,5 +1,6 @@
-import { Button, Card, Option, Select, Typography } from "@mui/joy";
-import Image from "next/image";
+import { Button, Card, Typography } from "@mui/joy";
+import { useState } from "react";
+import { callbackify } from "util";
 import { getPluginByName } from "../lib/plugins";
 
 export default function ConfigCard(props) {
@@ -7,10 +8,10 @@ export default function ConfigCard(props) {
     const plugin = getPluginByName(config.plugin)
 
     return (
-        <Card variant="outlined" sx={{ width: 320 }}>
-            <div className="flex">
-                <img src={plugin.image} className="h-12 w-12 mr-4" />
-                <div className="align-middle">
+        <Card variant="outlined">
+            <div className="grid grid-flow-col grid-cols-8">
+                <img src={plugin.image} className="h-16 w-16 mr-4 col-span-3" />
+                <div className="flex flex-col place-content-center mb-1 col-span-7">
                     <div className="flex">
                         <Typography className="text-xl">
                             {config.name}
@@ -26,11 +27,14 @@ export default function ConfigCard(props) {
                 <Button
                     variant="outlined"
                     size="md"
-                    className="place-self-end ml-4 w-16 px-2 text-l"
+                    className="justify-self-end self-center ml-4 mr-1 w-16 px-2 text-l col-span-3"
+                    onClick={() => {
+                        props.callback(config)
+                    }}
                 >
                     View .yml
                 </Button>
-            </div>
+            </div>y
         </Card>
     )
 }
