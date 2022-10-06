@@ -8,7 +8,7 @@ export default function ConfigCard(props) {
     const plugin = getPluginByName(config.plugin)
 
     return (
-        <Card variant="outlined">
+        <Card variant="outlined" className="mr-4 mb-4">
             <div className="grid grid-flow-col grid-cols-8">
                 <img src={plugin.image} className="h-16 w-16 mr-4 col-span-3" />
                 <div className="flex flex-col place-content-center mb-1 col-span-7">
@@ -34,7 +34,7 @@ export default function ConfigCard(props) {
                 >
                     View .yml
                 </Button>
-            </div>y
+            </div>
         </Card>
     )
 }

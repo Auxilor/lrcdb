@@ -1,38 +1,51 @@
 import { Button, Card, Typography } from "@mui/joy";
+import { useEffect, useState } from "react";
+import SyntaxHighlighter from "react-syntax-highlighter"
 
 export default function ConfigPreview(props) {
-    const downloadConfig = () => {
-        console.log("test")
-        const element = document.createElement("dl");
-        const file = new Blob(["test"], { type: 'text/plain' });
-        element.href = URL.createObjectURL(file);
-        element.download = `${props.config.name}.yml`;
-        document.body.appendChild(element); // Required for this to work in FireFox
-        element.click();
+    const [downloadLink, setDownloadLink] = useState('')
+
+    const createDownloadable = () => {
+        const data = new Blob([props.config.contents], { type: 'text/yml' })
+
+        // anti mem leak, supposedly
+        if (downloadLink !== '') {
+            window.URL.revokeObjectURL(downloadLink)
+        }
+
+        setDownloadLink(window.URL.createObjectURL(data))
     }
+
+    useEffect(() => {
+        createDownloadable()
+    }, [props.config])
 
     return (
         <div className="absolute z-10 bg-slate-400/20">
             <div className="flex place-content-center place-items-center w-screen h-screen">
                 <Card className="w-4/12 h-1/2">
-                    <Typography className="bg-slate-200 p-4 rounded-lg h-full">
+                    <SyntaxHighlighter language="yaml" className="bg-slate-200 p-8 rounded-lg h-full font-mono text-xs overflow-scroll">
                         {props.config.contents}
-                    </Typography>
-                    <div className='grid grid-cols-6 grid-rows-1'>
-                        <Button
-                            variant="outlined"
-                            onClick={downloadConfig}
-                            className="col-start-1 col-span-2 mt-3"
-                            href={`https://paste.willfp.com/raw/${props.config.token}`}
+                    </SyntaxHighlighter>
+                    <div className='grid grid-cols-6 grid-rows-1 mt-3'>
+                        <a
+                            download={`${props.config.name}.yml`}
+                            href={downloadLink}
+                            className="col-start-1 col-span-2"
                         >
-                            Download
-                        </Button>
+                            <Button
+                                variant="outlined"
+                                className="w-full"
+                            >
+                                Download
+                            </Button>
+                        </a>
                         <Button
                             variant="outlined"
                             onClick={() => {
                                 props.callback(null)
                             }}
-                            className="col-start-6 mt-3"
+                            className="col-start-6"
                         >
                             Close
                         </Button>

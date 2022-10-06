@@ -12,5 +12,4 @@ model Config {
   name     String
   plugin   String
   contents String
-  token    String
 }

@@ -1,6 +1,7 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import yaml from "js-yaml"
-import { PrismaClient } from "@prisma/client"
+import { Config, PrismaClient } from "@prisma/client"
+import { PrismaClientValidationError } from "@prisma/client/runtime"
 
 const prisma = new PrismaClient()
 
@@ -67,17 +68,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return
     }
 
-    const token = await fetch('https://paste.willfp.com/documents', {
-      method: 'POST',
-      body: contents
-    })
-
     await prisma.config.create({
       data: {
         name: name,
         plugin: plugin.toLowerCase(),
-        contents: contents,
-        token: token
+        contents: contents
       }
     })
 
@@ -108,20 +103,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return
     }
 
-    const configs = (await prisma.config.findMany({
-      take: limit,
-      where: {
-        plugin: {
-          equals: plugin.toLowerCase()
-        }
-      }
-    })).filter(config => {
-      if (query.length === 0) {
-        return true
-      }
+    let configs: Config[] = []
 
-      return config.name.toLowerCase().includes(query.toLowerCase())
-    })
+    if (plugin === undefined || plugin.length === 0) {
+      configs = (await prisma.config.findMany({
+        take: limit
+      })).filter(config => {
+        if (query.length === 0) {
+          return true
+        }
+
+        return config.name.toLowerCase().includes(query.toLowerCase())
+      })
+    } else {
+      configs = (await prisma.config.findMany({
+        take: limit,
+        where: {
+          plugin: {
+            equals: plugin.toLowerCase()
+          }
+        }
+      })).filter(config => {
+        if (query.length === 0) {
+          return true
+        }
+
+        return config.name.toLowerCase().includes(query.toLowerCase())
+      })
+    }
 
     res.status(200).json({
       configs: configs.map(config => {
