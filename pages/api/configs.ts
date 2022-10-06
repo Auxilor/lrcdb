@@ -1,10 +1,8 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import yaml from "js-yaml"
 import { Config, PrismaClient } from "@prisma/client"
-import { PrismaClientValidationError } from "@prisma/client/runtime"
+import yaml from "js-yaml"
+import { NextApiRequest, NextApiResponse } from "next"
 
 const prisma = new PrismaClient()
-
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method === 'POST') {
@@ -133,13 +131,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     res.status(200).json({
-      configs: configs.map(config => {
-        return {
-          name: config.name,
-          plugin: config.plugin,
-          contents: config.contents
-        }
-      })
+      configs: configs
     })
   } else {
     res.status(400).json({

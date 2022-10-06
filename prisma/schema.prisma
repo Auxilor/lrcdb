@@ -8,8 +8,10 @@ datasource db {
 }
 
 model Config {
-  id       Int    @id @default(autoincrement())
-  name     String
-  plugin   String
-  contents String
+  id        String @id @default(uuid())
+  name      String
+  plugin    String
+  contents  String
+  downloads Int    @default(0)
+  views     Int    @default(0)
 }

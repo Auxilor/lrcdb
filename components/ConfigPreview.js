@@ -1,6 +1,6 @@
-import { Button, Card, Typography } from "@mui/joy";
+import { Button, Card } from "@mui/joy";
 import { useEffect, useState } from "react";
-import SyntaxHighlighter from "react-syntax-highlighter"
+import SyntaxHighlighter from "react-syntax-highlighter";
 
 export default function ConfigPreview(props) {
     const [downloadLink, setDownloadLink] = useState('')
@@ -23,7 +23,7 @@ export default function ConfigPreview(props) {
     return (
         <div className="absolute z-10 bg-slate-400/20">
             <div className="flex place-content-center place-items-center w-screen h-screen">
-                <Card className="w-4/12 h-1/2">
+                <Card className="w-1/2 h-5/6">
                     <SyntaxHighlighter language="yaml" className="bg-slate-200 p-8 rounded-lg h-full font-mono text-xs overflow-scroll">
                         {props.config.contents}
                     </SyntaxHighlighter>

@@ -1,7 +1,6 @@
 import { Button, Card, Typography } from "@mui/joy";
-import { useState } from "react";
-import { callbackify } from "util";
 import { getPluginByName } from "../lib/plugins";
+import { FaDownload, FaEye } from "react-icons/fa"
 
 export default function ConfigCard(props) {
     const config = props.config
@@ -20,9 +19,20 @@ export default function ConfigCard(props) {
                             .yml
                         </Typography>
                     </div>
-                    <Typography className="text-slate-600 text-sm">
-                        {plugin.name}
-                    </Typography>
+                    <div className="flex">
+                        <Typography
+                            className="text-slate-600 text-sm"
+                            startDecorator={<FaDownload className="mr-1" />}
+                        >
+                            {config.downloads}
+                        </Typography>
+                        <Typography
+                            className="text-slate-600 text-sm"
+                            startDecorator={<FaEye className="ml-3" />}
+                        >
+                            {config.views}
+                        </Typography>
+                    </div>
                 </div>
                 <Button
                     variant="outlined"
