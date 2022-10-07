@@ -135,12 +135,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
   } else if (req.method === 'PATCH') {
     const id: string = req.body.id
-    const views: number = req.body.views
-    const downloads: number = req.body.downloads
+    const views = req.body.views
+    const downloads = req.body.downloads
 
     if (id === undefined) {
       res.status(400).json({
         message: "You must specify a config ID!"
+      })
+      return
+    }
+
+    const config = await prisma.config.findFirst({
+      where: {
+        id: id
+      }
+    })
+
+    if (config == null) {
+      res.status(400).json({
+        message: `Could not find a config matching ID ${id}!`
       })
       return
     }

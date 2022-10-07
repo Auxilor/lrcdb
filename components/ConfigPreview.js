@@ -21,9 +21,11 @@ export default function ConfigPreview(props) {
     }, [props.config])
 
     return (
-        <div className="absolute z-10 bg-slate-400/20">
+        <div
+            className="absolute z-10 bg-slate-400/20"
+        >
             <div className="flex place-content-center place-items-center w-screen h-screen">
-                <Card className="w-1/2 h-5/6">
+                <Card className="w-1/2 h-5/6" id='preview-card'>
                     <SyntaxHighlighter language="yaml" className="bg-slate-200 p-8 rounded-lg h-full font-mono text-xs overflow-scroll">
                         {props.config.contents}
                     </SyntaxHighlighter>
@@ -42,9 +44,9 @@ export default function ConfigPreview(props) {
                                         "Content-Type": "application/json"
                                     }
                                 }).then(res => res.json())
-                                .catch(err => {
-                                    console.error(err)
-                                })
+                                    .catch(err => {
+                                        console.error(err)
+                                    })
                             }}
                             className="col-start-1 col-span-2"
                         >
