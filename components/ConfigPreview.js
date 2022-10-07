@@ -31,6 +31,21 @@ export default function ConfigPreview(props) {
                         <a
                             download={`${props.config.name}.yml`}
                             href={downloadLink}
+                            onClick={() => {
+                                fetch(`/api/configs`, {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        id: props.config.id,
+                                        downloads: props.config.downloads + 1
+                                    }),
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    }
+                                }).then(res => res.json())
+                                .catch(err => {
+                                    console.error(err)
+                                })
+                            }}
                             className="col-start-1 col-span-2"
                         >
                             <Button

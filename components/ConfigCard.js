@@ -39,6 +39,19 @@ export default function ConfigCard(props) {
                     size="md"
                     className="justify-self-end self-center ml-4 mr-1 w-16 px-2 text-l col-span-3"
                     onClick={() => {
+                        fetch(`/api/configs`, {
+                            method: 'PATCH',
+                            body: JSON.stringify({
+                                id: config.id,
+                                views: config.views + 1
+                            }),
+                            headers: {
+                                "Content-Type": "application/json"
+                            }
+                        }).then(res => res.json())
+                            .catch(err => {
+                                console.error(err)
+                            })
                         props.callback(config)
                     }}
                 >

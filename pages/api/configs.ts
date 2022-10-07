@@ -133,6 +133,43 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     res.status(200).json({
       configs: configs
     })
+  } else if (req.method === 'PATCH') {
+    const id: string = req.body.id
+    const views: number = req.body.views
+    const downloads: number = req.body.downloads
+
+    if (id === undefined) {
+      res.status(400).json({
+        message: "You must specify a config ID!"
+      })
+      return
+    }
+
+    if (views !== undefined) {
+      await prisma.config.update({
+        where: {
+          id: id
+        },
+        data: {
+          views: views
+        }
+      })
+    }
+
+    if (downloads !== undefined) {
+      await prisma.config.update({
+        where: {
+          id: id
+        },
+        data: {
+          downloads: downloads
+        }
+      })
+    }
+
+    res.status(200).json({
+      message: `Updated config ID ${id}!`
+    })
   } else {
     res.status(400).json({
       message: `${req.method} requests are not supported!`
