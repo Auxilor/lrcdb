@@ -3,6 +3,7 @@ import '../styles/globals.css'
 
 function App({ Component, pageProps }) {
   return <CssVarsProvider>
+    <title>lrcdb</title>
     <Component {...pageProps} />
   </CssVarsProvider>
 }
