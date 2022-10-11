@@ -8,11 +8,17 @@ datasource db {
 }
 
 model Config {
-  id        String @id @default(uuid()) @map("_id")
-  name      String 
+  id        String  @id @default(uuid()) @map("_id")
+  name      String
   plugin    String
-  author    String @default("Unknown Author")
+  author    String  @default("Unknown Author")
   contents  String
-  downloads Int    @default(0)
-  views     Int    @default(0)
+  downloads Int     @default(0)
+  views     Int     @default(0)
+  isPrivate Boolean @default(false)
+}
+
+model ApiKey {
+  id        String  @id @default(uuid()) @map("_id")
+  hash      String
 }

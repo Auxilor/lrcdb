@@ -1,4 +1,3 @@
-
 import { Button, Option, Select, TextField } from "@mui/joy";
 import { plugins } from "../lib/plugins";
 
@@ -33,7 +32,7 @@ export default function SearchPane(props) {
                     setQuery("")
                 }}
             >
-                Reset
+                Reset Filters
             </Button>
         </div>
     )

@@ -4,7 +4,6 @@ import MainPage from "../components/MainPage";
 
 export const ShowingConfigContext = React.createContext(null)
 
-
 export default function Home() {
   const [showing, setShowing] = useState(null)
 
@@ -31,7 +30,7 @@ export default function Home() {
       {
         showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview} />
       }
-      <MainPage setConfigPreview={setConfigPreview}/>
+      <MainPage setConfigPreview={setConfigPreview} />
     </div>
   )
 }

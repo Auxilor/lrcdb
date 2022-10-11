@@ -31,15 +31,15 @@ export default function ConfigCard(props) {
                     <div className="flex flex-col place-content-center">
                         <Typography
                             className="text-slate-600 text-sm"
-                            startDecorator={<FaDownload />}
+                            endDecorator={<FaEye />}
                         >
-                            {config.downloads}
+                            {config.views}
                         </Typography>
                         <Typography
                             className="text-slate-600 text-sm"
-                            startDecorator={<FaEye />}
+                            endDecorator={<FaDownload />}
                         >
-                            {config.views}
+                            {config.downloads}
                         </Typography>
                     </div>
                     <Button

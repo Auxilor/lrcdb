@@ -1,4 +1,5 @@
-import { Config, PrismaClient } from "@prisma/client"
+import { PrismaClient } from "@prisma/client"
+import crypto from "crypto"
 import yaml from "js-yaml"
 import { NextApiRequest, NextApiResponse } from "next"
 
@@ -9,7 +10,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const name = req.body.name
     const plugin = req.body.plugin
     const contents = req.body.contents
-    const author = req.body.author
+    const author = req.body.author || "Unknown Author"
+    const isPrivate = req.body.isPrivate || false
 
     if (name === undefined) {
       res.status(400).json({
@@ -39,13 +41,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       return;
     }
 
-    if (author === undefined) {
-      res.status(400).json({
-        message: "Didn't get an author!"
-      })
-      return;
-    }
-
     try {
       yaml.load(contents)
     } catch (e) {
@@ -65,7 +60,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
           },
           {
             plugin: {
-              equals: plugin.toLowerCase()
+              equals: plugin,
+              mode: 'insensitive'
             }
           }
         ]
@@ -84,9 +80,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     await prisma.config.create({
       data: {
         name: name,
-        plugin: plugin.toLowerCase(),
+        plugin: plugin,
         contents: contents,
-        author: author
+        author: author,
+        isPrivate: isPrivate
       }
     })
 
@@ -107,44 +104,45 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const plugin = getSingle(req.query.plugin)
-    const query = getSingle(req.query.query) || ""
-    const limit: number = parseInt(getSingle(req.query.limit) || "50")
+    let query = getSingle(req.query.query) || ""
+    const limit: number = parseInt(getSingle(req.query.limit) || "1000000000") // Jank
+    const apiKey = getSingle(req.query.apiKey) || ""
 
-    if (plugin === undefined) {
-      res.status(400).json({
-        message: "You must specify a plugin!"
-      })
-      return
-    }
+    const showPrivate = (await prisma.apiKey.findFirst({
+      where: {
+        hash: crypto.createHash('sha256').update(apiKey).digest('hex')
+      }
+    })) != null
 
-    let configs: Config[] = []
-
-    if (plugin === undefined || plugin.length === 0) {
-      configs = (await prisma.config.findMany({
-        take: limit
-      })).filter(config => {
-        if (query.length === 0) {
-          return true
+    const configs = await prisma.config.findMany({
+      take: limit,
+      orderBy: [
+        {
+          downloads: 'desc'
+        },
+        {
+          views: 'desc'
         }
-
-        return config.name.toLowerCase().includes(query.toLowerCase())
-      })
-    } else {
-      configs = (await prisma.config.findMany({
-        take: limit,
-        where: {
-          plugin: {
-            equals: plugin.toLowerCase()
+      ],
+      where: {
+        plugin: {
+          contains: plugin,
+          mode: 'insensitive'
+        },
+        name: {
+          contains: query,
+          mode: 'insensitive'
+        },
+        OR: [
+          {
+            isPrivate: false
+          },
+          {
+            isPrivate: showPrivate
           }
-        }
-      })).filter(config => {
-        if (query.length === 0) {
-          return true
-        }
-
-        return config.name.toLowerCase().includes(query.toLowerCase())
-      })
-    }
+        ]
+      }
+    })
 
     res.status(200).json({
       configs: configs
@@ -175,14 +173,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (views !== undefined) {
-      if (views !== config.views + 1) {
-        console.log(`current ${config.views} new ${views}`)
-        res.status(400).json({
-          message: `Views can only be incremented by 1!`
-        })
-        return
-      }
-
       await prisma.config.update({
         where: {
           id: id
@@ -194,13 +184,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (downloads !== undefined) {
-      if (downloads !== config.downloads + 1) {
-        res.status(400).json({
-          message: `Downloads can only be incremented by 1!`
-        })
-        return
-      }
-
       await prisma.config.update({
         where: {
           id: id
