@@ -159,6 +159,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (views !== undefined) {
+      if (views !== config.views + 1) {
+        res.status(400).json({
+          message: `Views can only be incremented by 1!`
+        })
+        return
+      }
+
       await prisma.config.update({
         where: {
           id: id
@@ -170,6 +177,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     if (downloads !== undefined) {
+      if (downloads !== config.downloads + 1) {
+        res.status(400).json({
+          message: `Downloads can only be incremented by 1!`
+        })
+        return
+      }
+
       await prisma.config.update({
         where: {
           id: id

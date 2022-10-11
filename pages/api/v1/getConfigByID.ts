@@ -1,6 +1,4 @@
-import { Config, PrismaClient } from "@prisma/client"
-import { equal } from "assert"
-import yaml from "js-yaml"
+import { PrismaClient } from "@prisma/client"
 import { NextApiRequest, NextApiResponse } from "next"
 
 const prisma = new PrismaClient()
