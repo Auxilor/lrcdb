@@ -9,8 +9,9 @@ datasource db {
 
 model Config {
   id        String @id @default(uuid()) @map("_id")
-  name      String
+  name      String 
   plugin    String
+  author    String @default("Unknown Author")
   contents  String
   downloads Int    @default(0)
   views     Int    @default(0)

@@ -9,10 +9,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const name = req.body.name
     const plugin = req.body.plugin
     const contents = req.body.contents
+    const author = req.body.author
 
     if (name === undefined) {
       res.status(400).json({
         message: "Didn't get a config name!"
+      })
+      return
+    }
+
+    if (name.length > 40) {
+      res.status(400).json({
+        message: "Name is too long!"
       })
       return
     }
@@ -27,6 +35,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (contents === undefined) {
       res.status(400).json({
         message: "Didn't get any contents!"
+      })
+      return;
+    }
+
+    if (author === undefined) {
+      res.status(400).json({
+        message: "Didn't get an author!"
       })
       return;
     }
@@ -70,7 +85,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       data: {
         name: name,
         plugin: plugin.toLowerCase(),
-        contents: contents
+        contents: contents,
+        author: author
       }
     })
 
@@ -160,6 +176,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     if (views !== undefined) {
       if (views !== config.views + 1) {
+        console.log(`current ${config.views} new ${views}`)
         res.status(400).json({
           message: `Views can only be incremented by 1!`
         })

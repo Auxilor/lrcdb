@@ -7,58 +7,65 @@ export default function ConfigCard(props) {
     const plugin = getPluginByName(config.plugin)
 
     return (
-        <Card variant="outlined" className="mr-4 mb-4">
-            <div className="grid grid-flow-col grid-cols-8">
-                <img src={plugin.image} className="h-16 w-16 mr-4 col-span-3" />
-                <div className="flex flex-col place-content-center mb-1 col-span-7">
+        <Card variant="outlined">
+            <div className="flex flex-row gap-4">
+                <img src={plugin.image} className="h-16 w-16 col-span-3" />
+                <div className="flex flex-col place-content-center mb-1 col-span-7 overflow-hidden">
                     <div className="flex">
                         <Typography className="text-xl">
-                            {config.name.length > 12 ?
-                            config.name.substring(0, 9) + '...'
-                            : config.name}
+                            {config.name}
                         </Typography>
                         <Typography className="text-slate-400 text-xl">
                             .yml
                         </Typography>
                     </div>
-                    <div className="flex">
+                    <div className="flex gap-2">
                         <Typography
                             className="text-slate-600 text-sm"
-                            startDecorator={<FaDownload className="mr-1" />}
+                        >
+                            by {config.author}
+                        </Typography>
+                    </div>
+                </div>
+                <div className="flex flex-row gap-4 ml-auto">
+                    <div className="flex flex-col place-content-center">
+                        <Typography
+                            className="text-slate-600 text-sm"
+                            startDecorator={<FaDownload />}
                         >
                             {config.downloads}
                         </Typography>
                         <Typography
                             className="text-slate-600 text-sm"
-                            startDecorator={<FaEye className="ml-3" />}
+                            startDecorator={<FaEye />}
                         >
                             {config.views}
                         </Typography>
                     </div>
+                    <Button
+                        variant="outlined"
+                        size="md"
+                        className="self-center text-l"
+                        onClick={() => {
+                            fetch(`/api/v1/configs`, {
+                                method: 'PATCH',
+                                body: JSON.stringify({
+                                    id: config.id,
+                                    views: config.views + 1
+                                }),
+                                headers: {
+                                    "Content-Type": "application/json"
+                                }
+                            }).then(res => res.json())
+                                .catch(err => {
+                                    console.error(err)
+                                })
+                            props.setConfigPreview(config)
+                        }}
+                    >
+                        Preview
+                    </Button>
                 </div>
-                <Button
-                    variant="outlined"
-                    size="md"
-                    className="justify-self-end self-center ml-4 mr-1 w-16 px-2 text-l col-span-3"
-                    onClick={() => {
-                        fetch(`/api/v1/configs`, {
-                            method: 'PATCH',
-                            body: JSON.stringify({
-                                id: config.id,
-                                views: config.views + 1
-                            }),
-                            headers: {
-                                "Content-Type": "application/json"
-                            }
-                        }).then(res => res.json())
-                            .catch(err => {
-                                console.error(err)
-                            })
-                        props.setConfigPreview(config)
-                    }}
-                >
-                    View .yml
-                </Button>
             </div>
         </Card>
     )

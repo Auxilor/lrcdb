@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import ConfigPreview from "../components/ConfigPreview";
-import ConfigSearch from "../components/ConfigSearch";
+import MainPage from "../components/MainPage";
 
 export const ShowingConfigContext = React.createContext(null)
 
@@ -31,7 +31,7 @@ export default function Home() {
       {
         showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview} />
       }
-      <ConfigSearch setConfigPreview={setConfigPreview}/>
+      <MainPage setConfigPreview={setConfigPreview}/>
     </div>
   )
 }
