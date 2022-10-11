@@ -10,7 +10,7 @@ export default function ConfigSearch(props) {
     const [query, setQuery] = useState("")
 
     const updateConfigs = () => {
-        fetch(`/api/configs?plugin=${plugin}&query=${query}`)
+        fetch(`/api/v1/configs?plugin=${plugin}&query=${query}`)
             .then(res => res.json())
             .then(data => {
                 setConfigs(data.configs)
@@ -62,7 +62,7 @@ export default function ConfigSearch(props) {
                 <div className="col-start-2 col-span-5 p-5 overflow-scroll h-screen bg-slate-100">
                     <div className="grid grid-cols-3">
                         {configs.map(config => {
-                            return <ConfigCard config={config} callback={props.callback} />
+                            return <ConfigCard config={config} setConfigPreview={props.setConfigPreview} />
                         })}
                     </div>
                 </div>

@@ -8,7 +8,7 @@ export const ShowingConfigContext = React.createContext(null)
 export default function Home() {
   const [showing, setShowing] = useState(null)
 
-  const callback = (config) => {
+  const setConfigPreview = (config) => {
     setShowing(config)
   }
 
@@ -29,9 +29,9 @@ export default function Home() {
   return (
     <div id="container" className="h-screen w-screen overflow-hidden">
       {
-        showing != null && <ConfigPreview config={showing} callback={callback} />
+        showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview} />
       }
-      <ConfigSearch callback={callback}/>
+      <ConfigSearch setConfigPreview={setConfigPreview}/>
     </div>
   )
 }

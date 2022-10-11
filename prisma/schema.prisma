@@ -3,12 +3,12 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mongodb"
   url      = env("DATABASE_URL")
 }
 
 model Config {
-  id        String @id @default(uuid())
+  id        String @id @default(uuid()) @map("_id")
   name      String
   plugin    String
   contents  String

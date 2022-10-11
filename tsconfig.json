@@ -26,5 +26,5 @@
     "next-env.d.ts",
     "**/*.ts",
     "**/*.tsx"
-, "pages/api/configs.ts", "components/ConfigCard.js"  ]
+, "pages/api/v1/configs.ts", "components/ConfigCard.js"  ]
 }

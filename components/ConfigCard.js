@@ -13,7 +13,9 @@ export default function ConfigCard(props) {
                 <div className="flex flex-col place-content-center mb-1 col-span-7">
                     <div className="flex">
                         <Typography className="text-xl">
-                            {config.name}
+                            {config.name.length > 12 ?
+                            config.name.substring(0, 9) + '...'
+                            : config.name}
                         </Typography>
                         <Typography className="text-slate-400 text-xl">
                             .yml
@@ -39,7 +41,7 @@ export default function ConfigCard(props) {
                     size="md"
                     className="justify-self-end self-center ml-4 mr-1 w-16 px-2 text-l col-span-3"
                     onClick={() => {
-                        fetch(`/api/configs`, {
+                        fetch(`/api/v1/configs`, {
                             method: 'PATCH',
                             body: JSON.stringify({
                                 id: config.id,
@@ -52,7 +54,7 @@ export default function ConfigCard(props) {
                             .catch(err => {
                                 console.error(err)
                             })
-                        props.callback(config)
+                        props.setConfigPreview(config)
                     }}
                 >
                     View .yml
