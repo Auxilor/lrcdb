@@ -1,4 +1,5 @@
 import { Button, Option, Select, TextField, Typography } from "@mui/joy";
+import { FaSpinner } from "react-icons/fa";
 import { plugins } from "../lib/plugins";
 
 export default function SearchPane(props) {
@@ -6,6 +7,7 @@ export default function SearchPane(props) {
     const setPlugin = props.setPlugin
     const setQuery = props.setQuery
     const amount = props.amount
+    const isLoading = props.isLoading
 
     return (
         <div className="flex flex-col gap-3 place-items-center py-5">
@@ -40,11 +42,14 @@ export default function SearchPane(props) {
                 Reset Filters
             </Button>
 
-            <Typography
-                className="text-xs"
-            >
-                Showing {amount} configs
-            </Typography>
+            {isLoading ?
+                <FaSpinner className="animate-spin" /> :
+                <Typography
+                    className="text-xs"
+                >
+                    Showing {amount} configs
+                </Typography>}
+
         </div>
     )
 }

@@ -15,6 +15,7 @@ export default function ImportCommand(props) {
                 </Typography>
                 <Button
                     variant="outlined"
+                    color={copied ? "success" : undefined}
                     onClick={() => {
                         navigator.clipboard.writeText(command)
                         setCopied(true)

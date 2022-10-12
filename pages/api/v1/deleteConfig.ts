@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getAuthLevel } from "../../../lib/auth"
-
-const prisma = new PrismaClient()
+import { prisma } from "../../../lib/db"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'DELETE') {

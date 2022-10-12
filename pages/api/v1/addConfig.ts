@@ -1,8 +1,6 @@
-import { PrismaClient } from "@prisma/client"
 import yaml from "js-yaml"
 import { NextApiRequest, NextApiResponse } from "next"
-
-const prisma = new PrismaClient()
+import { prisma } from "../../../lib/db"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {

@@ -1,25 +1,18 @@
 import { Button, Card, Typography } from "@mui/joy";
 import { getPluginByName } from "../lib/plugins";
-import { FaDownload, FaEye, FaTrash } from "react-icons/fa"
+import { FaDownload, FaEye, FaTrash, FaSpinner } from "react-icons/fa"
 import { useEffect, useState } from "react";
 
 export default function ConfigCard(props) {
-    const [authorized, setAuthorized] = useState(false)
+    const [deleting, setDeleting] = useState(false)
+    const [loadingPreview, setLoadingPreview] = useState(false)
 
     const config = props.config
     const plugin = getPluginByName(config.plugin)
     const apiKey = props.apiKey
+    const authorized = props.authorized
     const setConfigPreview = props.setConfigPreview
     const updateConfigs = props.updateConfigs
-
-    useEffect(() => {
-        fetch(`/api/v1/getAuthorizationLevel?apiKey=${apiKey}`)
-            .then(res => res.json())
-            .then(data => {
-                setAuthorized(data.level > 0)
-            })
-            .catch(err => console.error(err))
-    }, [apiKey])
 
     return (
         <Card variant="outlined">
@@ -64,6 +57,8 @@ export default function ConfigCard(props) {
                             className="self-center text-l"
                             color="danger"
                             onClick={() => {
+                                setDeleting(true)
+
                                 fetch(`/api/v1/deleteConfig`, {
                                     method: 'DELETE',
                                     body: JSON.stringify({
@@ -79,7 +74,7 @@ export default function ConfigCard(props) {
                                     })
                             }}
                         >
-                            <FaTrash />
+                            {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
                         </Button>
                     }
                     <Button
@@ -87,6 +82,8 @@ export default function ConfigCard(props) {
                         size="md"
                         className="self-center text-l"
                         onClick={() => {
+                            setLoadingPreview(true)
+
                             fetch(`/api/v1/getConfigByID?id=${config.id}`)
                                 .then(res => res.json())
                                 .then(data => {
@@ -95,9 +92,10 @@ export default function ConfigCard(props) {
                                 .catch(err => {
                                     console.error(err)
                                 })
+                                .finally(() => setLoadingPreview(false))
                         }}
                     >
-                        Preview
+                        {loadingPreview ? <FaSpinner className="animate-spin" /> : "Preview"}
                     </Button>
                 </div>
             </div>

@@ -4,8 +4,10 @@ import { useEffect, useState } from "react";
 import ConfigGrid from "./ConfigGrid";
 import MoreOptions from "./MoreOptions";
 import SearchPane from "./SearchPane";
+import { FaSpinner } from "react-icons/fa";
 
 export default function MainPage(props) {
+    const [isLoading, setLoading] = useState(false)
     const [configs, setConfigs] = useState([])
     const [plugin, setPlugin] = useState("")
     const [query, setQuery] = useState("")
@@ -13,13 +15,16 @@ export default function MainPage(props) {
     const setConfigPreview = props.setConfigPreview
 
     const updateConfigs = () => {
+        setLoading(true)
         fetch(`/api/v1/getConfigsWithoutContents?plugin=${plugin}&query=${query}&apiKey=${apiKey}`)
             .then(res => res.json())
             .then(data => {
                 setConfigs(data.configs)
+                setLoading(false)
             })
             .catch(err => {
                 console.error(err)
+                setLoading(false)
             })
     }
 
@@ -40,11 +45,16 @@ export default function MainPage(props) {
                 >
                     libreforge config database
                 </Typography>
-                <SearchPane plugin={plugin} setPlugin={setPlugin} setQuery={setQuery} amount={configs.length} />
+                <SearchPane plugin={plugin} setPlugin={setPlugin} setQuery={setQuery} amount={configs.length} isLoading={isLoading} />
                 <MoreOptions setApiKey={setApiKey} apiKey={apiKey} className="place-self-end" />
             </div>
             <div className="col-start-2 col-span-full p-5 overflow-scroll h-screen bg-slate-100">
-                <ConfigGrid configs={configs} setConfigPreview={setConfigPreview} apiKey={apiKey} updateConfigs={updateConfigs} />
+                <ConfigGrid
+                    configs={configs}
+                    setConfigPreview={setConfigPreview}
+                    apiKey={apiKey}
+                    updateConfigs={updateConfigs}
+                />
             </div>
         </div>
     )
