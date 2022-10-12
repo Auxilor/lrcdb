@@ -1,5 +1,4 @@
 import { PrismaClient } from "@prisma/client"
-import crypto from "crypto"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getAuthLevel } from "../../../lib/auth"
 

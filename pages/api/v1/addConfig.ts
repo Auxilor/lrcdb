@@ -25,9 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return
     }
 
-    if (name.length > 40) {
+    if (name.length > 40 || name.includes(" ")) {
         res.status(400).json({
-            message: "Name is too long!"
+            message: "Invalid config name! (Too long, contains spaces)"
         })
         return
     }
@@ -47,7 +47,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     try {
-        yaml.load(contents)
+        const loaded: any = yaml.load(contents) // js-yaml doesn't have typing
+        if (loaded.effects === undefined || loaded.conditions === undefined) {
+            throw new Error('Missing effects/conditions!')
+        }
     } catch (e) {
         res.status(400).json({
             message: "Invalid config!"

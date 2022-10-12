@@ -44,7 +44,7 @@ export default function MainPage(props) {
                 <MoreOptions setApiKey={setApiKey} apiKey={apiKey} className="place-self-end" />
             </div>
             <div className="col-start-2 col-span-full p-5 overflow-scroll h-screen bg-slate-100">
-                <ConfigGrid configs={configs} setConfigPreview={setConfigPreview} />
+                <ConfigGrid configs={configs} setConfigPreview={setConfigPreview} apiKey={apiKey} updateConfigs={updateConfigs} />
             </div>
         </div>
     )

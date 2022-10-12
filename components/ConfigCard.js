@@ -1,11 +1,25 @@
 import { Button, Card, Typography } from "@mui/joy";
 import { getPluginByName } from "../lib/plugins";
-import { FaDownload, FaEye } from "react-icons/fa"
+import { FaDownload, FaEye, FaTrash } from "react-icons/fa"
+import { useEffect, useState } from "react";
 
 export default function ConfigCard(props) {
+    const [authorized, setAuthorized] = useState(false)
+
     const config = props.config
     const plugin = getPluginByName(config.plugin)
+    const apiKey = props.apiKey
     const setConfigPreview = props.setConfigPreview
+    const updateConfigs = props.updateConfigs
+
+    useEffect(() => {
+        fetch(`/api/v1/getAuthorizationLevel?apiKey=${apiKey}`)
+            .then(res => res.json())
+            .then(data => {
+                setAuthorized(data.level > 0)
+            })
+            .catch(err => console.error(err))
+    }, [apiKey])
 
     return (
         <Card variant="outlined">
@@ -43,6 +57,31 @@ export default function ConfigCard(props) {
                             {config.downloads}
                         </Typography>
                     </div>
+                    {authorized &&
+                        <Button
+                            variant="outlined"
+                            size="md"
+                            className="self-center text-l"
+                            color="danger"
+                            onClick={() => {
+                                fetch(`/api/v1/deleteConfig`, {
+                                    method: 'DELETE',
+                                    body: JSON.stringify({
+                                        apiKey: apiKey,
+                                        id: config.id
+                                    }),
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    }
+                                }).then(() => updateConfigs())
+                                    .catch(err => {
+                                        console.error(err)
+                                    })
+                            }}
+                        >
+                            <FaTrash />
+                        </Button>
+                    }
                     <Button
                         variant="outlined"
                         size="md"

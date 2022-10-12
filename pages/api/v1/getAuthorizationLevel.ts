@@ -1,9 +1,5 @@
-import { PrismaClient } from "@prisma/client"
-import crypto from "crypto"
 import { NextApiRequest, NextApiResponse } from "next"
 import { getAuthLevel } from "../../../lib/auth"
-
-const prisma = new PrismaClient()
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {
@@ -27,7 +23,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const apiKey = getSingle(req.query.apiKey)
 
+    const level = await getAuthLevel(apiKey)
+
     res.status(200).json({
-        level: getAuthLevel(apiKey)
+        level: level
     })
 }
