@@ -1,7 +1,7 @@
 import { Button, Card, Typography } from "@mui/joy";
+import { useState } from "react";
+import { FaDownload, FaEye, FaSpinner, FaTrash } from "react-icons/fa";
 import { getPluginByName } from "../lib/plugins";
-import { FaDownload, FaEye, FaTrash, FaSpinner } from "react-icons/fa"
-import { useEffect, useState } from "react";
 
 export default function ConfigCard(props) {
     const [deleting, setDeleting] = useState(false)
@@ -17,7 +17,7 @@ export default function ConfigCard(props) {
     return (
         <Card variant="outlined">
             <div className="flex flex-row gap-4">
-                <img src={plugin.image} className="h-16 w-16 col-span-3" />
+                <img src={plugin.image} className="h-0 w-0 md:h-16 md:w-16 col-span-3" />
                 <div className="flex flex-col place-content-center mb-1 col-span-7 overflow-hidden">
                     <div className="flex">
                         <Typography className="text-xl">
@@ -36,7 +36,7 @@ export default function ConfigCard(props) {
                     </div>
                 </div>
                 <div className="flex flex-row gap-4 ml-auto">
-                    <div className="flex flex-col place-content-center">
+                    <div className="flex flex-col place-content-center items-end">
                         <Typography
                             className="text-slate-600 text-sm"
                             endDecorator={<FaEye />}
@@ -68,10 +68,12 @@ export default function ConfigCard(props) {
                                     headers: {
                                         "Content-Type": "application/json"
                                     }
-                                }).then(() => updateConfigs())
+                                })
+                                    .then(() => updateConfigs())
                                     .catch(err => {
                                         console.error(err)
                                     })
+                                    .finally(() => setDeleting(false))
                             }}
                         >
                             {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
