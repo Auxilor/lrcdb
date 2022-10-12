@@ -13,7 +13,7 @@ export default function MainPage(props) {
     const setConfigPreview = props.setConfigPreview
 
     const updateConfigs = () => {
-        fetch(`/api/v1/configs?plugin=${plugin}&query=${query}&apiKey=${apiKey}`)
+        fetch(`/api/v1/getConfigsWithoutContents?plugin=${plugin}&query=${query}&apiKey=${apiKey}`)
             .then(res => res.json())
             .then(data => {
                 setConfigs(data.configs)

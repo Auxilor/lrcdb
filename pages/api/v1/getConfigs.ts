@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client"
+import crypto from "crypto"
 import { NextApiRequest, NextApiResponse } from "next"
+import { getAuthLevel } from "../../../lib/auth"
 
 const prisma = new PrismaClient()
 
@@ -23,38 +25,34 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return (param as string[]).pop()
   }
 
-  const id = getSingle(req.query.id)
+  const plugin = getSingle(req.query.plugin)
+  const apiKey = getSingle(req.query.apiKey)
+  const isAuthorized = await getAuthLevel(apiKey) > 0
 
-  if (id === undefined) {
-    res.status(400).json({
-      message: "You must specify a config ID!"
+  if (!isAuthorized) {
+    res.status(403).json({
+      message: "You are not authorized to do this!"
     })
-    return
   }
 
-  const config = await prisma.config.findFirst({
+  const configs = await prisma.config.findMany({
+    orderBy: [
+      {
+        downloads: 'desc'
+      },
+      {
+        views: 'desc'
+      }
+    ],
     where: {
-      id: id
-    }
-  })
-
-  if (config == null) {
-    res.status(400).json({
-      message: "Could not find config!"
-    })
-    return
-  }
-
-  await prisma.config.update({
-    where: {
-      id: id
-    },
-    data: {
-      views: config.views + 1
+      plugin: {
+        contains: plugin,
+        mode: 'insensitive'
+      }
     }
   })
 
   res.status(200).json({
-    config: config
+    configs: configs
   })
 }

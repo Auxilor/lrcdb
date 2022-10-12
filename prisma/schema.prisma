@@ -22,4 +22,5 @@ model ApiKey {
   id       String @id @default(uuid()) @map("_id")
   username String
   hash     String
+  level    Int
 }

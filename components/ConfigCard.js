@@ -5,6 +5,7 @@ import { FaDownload, FaEye } from "react-icons/fa"
 export default function ConfigCard(props) {
     const config = props.config
     const plugin = getPluginByName(config.plugin)
+    const setConfigPreview = props.setConfigPreview
 
     return (
         <Card variant="outlined">
@@ -47,20 +48,14 @@ export default function ConfigCard(props) {
                         size="md"
                         className="self-center text-l"
                         onClick={() => {
-                            fetch(`/api/v1/configs`, {
-                                method: 'PATCH',
-                                body: JSON.stringify({
-                                    id: config.id,
-                                    views: config.views + 1
-                                }),
-                                headers: {
-                                    "Content-Type": "application/json"
-                                }
-                            }).then(res => res.json())
+                            fetch(`/api/v1/getConfigByID?id=${config.id}`)
+                                .then(res => res.json())
+                                .then(data => {
+                                    setConfigPreview(data.config)
+                                })
                                 .catch(err => {
                                     console.error(err)
                                 })
-                            props.setConfigPreview(config)
                         }}
                     >
                         Preview
