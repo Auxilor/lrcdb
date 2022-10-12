@@ -24,6 +24,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   }
 
   const id = getSingle(req.query.id)
+  const isDownload = getSingle(req.query.isDownload) || false
 
   if (id === undefined) {
     res.status(400).json({
@@ -45,14 +46,25 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return
   }
 
-  await prisma.config.update({
-    where: {
-      id: id
-    },
-    data: {
-      views: config.views + 1
-    }
-  })
+  if (isDownload) {
+    await prisma.config.update({
+      where: {
+        id: id
+      },
+      data: {
+        downloads: config.downloads + 1
+      }
+    })
+  } else {
+    await prisma.config.update({
+      where: {
+        id: id
+      },
+      data: {
+        views: config.views + 1
+      }
+    })
+  }
 
   res.status(200).json({
     config: config

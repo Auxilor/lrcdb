@@ -63,7 +63,8 @@ export default function ConfigPreview(props) {
                                 download={`${config.name}.yml`}
                                 href={downloadLink}
                                 onClick={() => {
-
+                                    fetch(`/api/v1/getConfigByID?id=${config.id}&isDownload=true`)
+                                        .catch(err => console.error(err))
                                 }}
                                 className="col-start-2"
                             >
