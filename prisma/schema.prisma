@@ -19,8 +19,8 @@ model Config {
 }
 
 model User {
-  id       String @id @default(uuid()) @map("_id")
-  username String
-  apiKeyHash   String
-  level    Int
+  id         String @id @default(uuid()) @map("_id")
+  username   String
+  apiKeyHash String
+  level      Int
 }
