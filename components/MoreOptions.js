@@ -7,7 +7,7 @@ export default function MoreOptions(props) {
     const apiKey = props.apiKey
 
     return (
-        <div>
+        <div className="flex flex-col place-items-center gap-4">
             <Switch
                 checked={shown}
                 size="sm"

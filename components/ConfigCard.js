@@ -21,7 +21,7 @@ export default function ConfigCard(props) {
                     </div>
                     <div className="flex gap-2">
                         <Typography
-                            className="text-slate-600 text-sm"
+                            className="text-slate-600 text-s"
                         >
                             by {config.author}
                         </Typography>
