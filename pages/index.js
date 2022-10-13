@@ -27,6 +27,8 @@ export default function Home() {
 
   return (
     <div id="container" className="h-screen w-screen overflow-hidden">
+      <title>lrcdb</title>
+
       {
         showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview} />
       }
