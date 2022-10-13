@@ -45,8 +45,21 @@ export default function MainPage(props) {
                 >
                     libreforge config database
                 </Typography>
+
                 <SearchPane plugin={plugin} setPlugin={setPlugin} setQuery={setQuery} amount={configs.length} isLoading={isLoading} />
                 <MoreOptions setApiKey={setApiKey} apiKey={apiKey} className="place-self-end" />
+
+                <a
+                href="https://gamersupps.gg/discount/Auxilor?afmc=Auxilor"
+                target="_blank"
+                className="mt-4"
+                >
+                    <img
+                        src="https://i.imgur.com/7mFhlQO.png"
+                        alt="GamerSupps, Code Auxilor"
+                        className="rounded-xl w-full"
+                    />
+                </a>
             </div>
             <div className="col-start-2 col-span-full p-5 overflow-scroll h-screen bg-slate-100">
                 <ConfigGrid
