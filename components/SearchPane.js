@@ -50,6 +50,13 @@ export default function SearchPane(props) {
                     Showing {amount} configs
                 </Typography>}
 
+            <Typography
+                className="text-red-700 text-xs text-center"
+            >
+                Configurations here are not officially supported.
+                Download them at your own risk.
+            </Typography>
+
         </div>
     )
 }
