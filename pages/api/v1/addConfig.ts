@@ -92,7 +92,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     }
 
-    await prisma.config.create({
+    const config = await prisma.config.create({
         data: {
             name: name,
             plugin: plugin,
@@ -103,6 +103,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     })
 
     res.status(201).json({
-        message: `Added ${name} for ${plugin}!`
+        message: `Added ${name} for ${plugin}!`,
+        id: config.id
     })
 }
