@@ -74,13 +74,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     })
 
-    const exists = existing != null
+    if (existing != null) {
+        const isExistingPrivate = existing.isPrivate
+        const isNewPrivate = isPrivate
 
-    if (exists) {
-        res.status(400).json({
-            message: `Identical config already exists!`
-        })
-        return
+        if (!isNewPrivate && isExistingPrivate) {
+            await prisma.config.delete({
+                where: {
+                    id: existing.id
+                }
+            })
+        } else {
+            res.status(400).json({
+                message: `Identical config already exists!`
+            })
+            return
+        }
     }
 
     await prisma.config.create({
