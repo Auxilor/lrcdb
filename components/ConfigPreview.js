@@ -46,7 +46,7 @@ export default function ConfigPreview(props) {
                                 .yml
                             </Typography>
                         </div>
-                        <SyntaxHighlighter language="yaml" className="bg-slate-200 p-8 rounded-lg h-full font-mono text-xs overflow-scroll">
+                        <SyntaxHighlighter language="yaml" className="bg-slate-200 p-4 rounded-lg h-full font-mono text-xs overflow-scroll">
                             {config.contents}
                         </SyntaxHighlighter>
                         <div className='grid grid-cols-3 grid-rows-1 mt-3 gap-4'>
