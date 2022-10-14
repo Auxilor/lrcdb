@@ -56,9 +56,6 @@ export default function SearchPane(props) {
                 Configurations here are not officially supported.
                 Download them at your own risk.
             </Typography>
-
-            
-
         </div>
     )
 }
