@@ -50,9 +50,9 @@ export default function MainPage(props) {
                 <MoreOptions setApiKey={setApiKey} apiKey={apiKey} className="place-self-end" />
 
                 <a
-                href="https://gamersupps.gg/discount/Auxilor?afmc=Auxilor"
-                target="_blank"
-                className="mt-4"
+                    href="https://gamersupps.gg/Auxilor"
+                    target="_blank"
+                    className="mt-4"
                 >
                     <img
                         src="https://i.imgur.com/7mFhlQO.png"
