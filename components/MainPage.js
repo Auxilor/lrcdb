@@ -33,8 +33,8 @@ export default function MainPage(props) {
     }, [plugin, query, apiKey])
 
     return (
-        <div className="md:grid md:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-7">
-            <div className="col-start-1 p-10 flex flex-col place-items-center">
+        <div className="md:grid md:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-7 overflow-scroll md:overflow-hidden">
+            <div className="md:col-start-1 p-10 flex flex-col place-items-center">
                 <Typography
                     className="text-center text-7xl font-sans"
                 >
@@ -61,7 +61,7 @@ export default function MainPage(props) {
                     />
                 </a>
             </div>
-            <div className="col-start-2 col-span-full p-5 overflow-scroll h-screen bg-slate-100">
+            <div className="md:col-start-2 md:col-span-full p-5 md:overflow-scroll h-screen bg-slate-100">
                 <ConfigGrid
                     configs={configs}
                     setConfigPreview={setConfigPreview}

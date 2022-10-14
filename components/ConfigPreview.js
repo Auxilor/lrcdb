@@ -37,7 +37,7 @@ export default function ConfigPreview(props) {
                 }
                 {
                     shownCommand == null &&
-                    <Card className="w-1/2 h-5/6" id='preview-card'>
+                    <Card className="w-11/12 md:w-1/2 h-5/6" id='preview-card'>
                         <div className="flex mb-3">
                             <Typography className="text-xl">
                                 {config.name}
