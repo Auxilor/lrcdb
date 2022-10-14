@@ -18,5 +18,5 @@ jobs:
           registry: ghcr.io
           username: "WillFP"
           password: ${{ secrets.ACCESS_TOKEN }}
-          repository: Auxilor/lrcb
+          repository: auxilor/lrcdb
           tags: latest
