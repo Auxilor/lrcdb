@@ -44,25 +44,17 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return
   }
 
-  if (isDownload) {
-    await prisma.config.update({
-      where: {
-        id: id
-      },
-      data: {
-        downloads: config.downloads + 1
-      }
-    })
-  } else {
-    await prisma.config.update({
-      where: {
-        id: id
-      },
-      data: {
-        views: config.views + 1
-      }
-    })
-  }
+  const dlIncrement = isDownload ? 1 : 0
+
+  await prisma.config.update({
+    where: {
+      id: id
+    },
+    data: {
+      views: config.views + 1,
+      downloads: config.downloads + dlIncrement
+    }
+  })
 
   res.status(200).json({
     config: config
