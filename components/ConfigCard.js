@@ -1,10 +1,11 @@
 import { Button, Card, Typography } from "@mui/joy";
 import { useState } from "react";
-import { FaDownload, FaEye, FaSpinner, FaTrash } from "react-icons/fa";
+import { FaDownload, FaEye, FaShare, FaSpinner, FaTrash } from "react-icons/fa";
 import { getPluginByName } from "../lib/plugins";
 
 export default function ConfigCard(props) {
     const [deleting, setDeleting] = useState(false)
+    const [publicizing, setPublicizing] = useState(false)
     const [loadingPreview, setLoadingPreview] = useState(false)
 
     const config = props.config
@@ -50,6 +51,37 @@ export default function ConfigCard(props) {
                             {config.downloads}
                         </Typography>
                     </div>
+
+                    {authorized && config.isPrivate &&
+                        <Button
+                            variant="outlined"
+                            size="md"
+                            className="self-center text-l"
+                            color="success"
+                            onClick={() => {
+                                setPublicizing(true)
+
+                                fetch(`/api/v1/publicizeConfig`, {
+                                    method: 'PATCH',
+                                    body: JSON.stringify({
+                                        apiKey: apiKey,
+                                        id: config.id
+                                    }),
+                                    headers: {
+                                        "Content-Type": "application/json"
+                                    }
+                                })
+                                    .then(() => updateConfigs())
+                                    .catch(err => {
+                                        console.error(err)
+                                    })
+                                    .finally(() => setPublicizing(false))
+                            }}
+                        >
+                            {publicizing ? <FaSpinner className="animate-spin" /> : <FaShare />}
+                        </Button>
+                    }
+
                     {authorized &&
                         <Button
                             variant="outlined"
@@ -79,6 +111,7 @@ export default function ConfigCard(props) {
                             {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
                         </Button>
                     }
+
                     <Button
                         variant="outlined"
                         size="md"
