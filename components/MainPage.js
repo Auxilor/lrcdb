@@ -29,7 +29,11 @@ export default function MainPage(props) {
             .then(res => res.json())
             .then(data => {
                 setAmount(data.amount)
-                setShowingAll(amount < PAGE_SIZE * (page - 1))
+                if (amount == 0) {
+                    setShowingAll(true)
+                } else {
+                    setShowingAll(amount < PAGE_SIZE * (page - 1))
+                }
             })
             .catch(err => console.error(err))
     }
@@ -38,6 +42,17 @@ export default function MainPage(props) {
         setPage(page + 1)
         updateConfigs()
     }
+
+    const [authorized, setAuthorized] = useState(false)
+
+    useEffect(() => {
+        fetch(`/api/v1/getAuthorizationLevel?apiKey=${apiKey}`)
+            .then(res => res.json())
+            .then(data => {
+                setAuthorized(data.level > 0)
+            })
+            .catch(err => console.error(err))
+    }, [apiKey])
 
     useEffect(() => {
         updateConfigs()
@@ -61,8 +76,19 @@ export default function MainPage(props) {
                     libreforge config database
                 </Typography>
 
-                <SearchPane plugin={plugin} setPlugin={setPlugin} setQuery={setQuery} amount={amount} isLoading={isLoading} />
-                <MoreOptions setApiKey={setApiKey} apiKey={apiKey} className="place-self-end" />
+                <SearchPane
+                    plugin={plugin}
+                    setPlugin={setPlugin}
+                    setQuery={setQuery}
+                    amount={amount}
+                    isLoading={isLoading}
+                />
+
+                <MoreOptions
+                    setApiKey={setApiKey}
+                    apiKey={apiKey}
+                    className="place-self-end"
+                />
 
                 <a
                     href="https://gamersupps.gg/Auxilor"
@@ -84,6 +110,7 @@ export default function MainPage(props) {
                     updateConfigs={updateConfigs}
                     loadMore={loadMore}
                     isShowingAll={isShowingAll}
+                    authorized={authorized}
                 />
             </div>
         </div>

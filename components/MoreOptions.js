@@ -24,9 +24,7 @@ export default function MoreOptions(props) {
                 <TextField
                     placeholder="API key"
                     value={apiKey}
-                    onChange={(e) => {
-                        setApiKey(e.target.value)
-                    }}
+                    onChange={(e) => setApiKey(e.target.value)}
                 />
             }
         </div>

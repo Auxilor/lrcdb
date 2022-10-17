@@ -1,11 +1,10 @@
 import { Button, Card, Typography } from "@mui/joy";
 import { useState } from "react";
-import { FaDownload, FaEye, FaShare, FaSpinner, FaTrash } from "react-icons/fa";
+import { FaDownload, FaEye, FaSpinner } from "react-icons/fa";
 import { getPluginByName } from "../lib/plugins";
+import AdminCardOptions from "./AdminCardOptions"
 
 export default function ConfigCard(props) {
-    const [deleting, setDeleting] = useState(false)
-    const [publicizing, setPublicizing] = useState(false)
     const [loadingPreview, setLoadingPreview] = useState(false)
 
     const config = props.config
@@ -16,7 +15,7 @@ export default function ConfigCard(props) {
     const updateConfigs = props.updateConfigs
 
     return (
-        <Card variant="outlined">
+        <Card variant="outlined transition ease-in-out hover:-translate-y-1 hover:shadow-lg">
             <div className="flex flex-row gap-4">
                 <img src={plugin.image} className="h-0 w-0 md:h-16 md:w-16 col-span-3" />
                 <div className="flex flex-col place-content-center mb-1 col-span-7 overflow-hidden">
@@ -52,64 +51,12 @@ export default function ConfigCard(props) {
                         </Typography>
                     </div>
 
-                    {authorized && config.isPrivate &&
-                        <Button
-                            variant="outlined"
-                            size="md"
-                            className="self-center text-l"
-                            color="success"
-                            onClick={() => {
-                                setPublicizing(true)
-
-                                fetch(`/api/v1/publicizeConfig`, {
-                                    method: 'PATCH',
-                                    body: JSON.stringify({
-                                        apiKey: apiKey,
-                                        id: config.id
-                                    }),
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    }
-                                })
-                                    .then(() => updateConfigs())
-                                    .catch(err => {
-                                        console.error(err)
-                                    })
-                                    .finally(() => setPublicizing(false))
-                            }}
-                        >
-                            {publicizing ? <FaSpinner className="animate-spin" /> : <FaShare />}
-                        </Button>
-                    }
-
-                    {authorized &&
-                        <Button
-                            variant="outlined"
-                            size="md"
-                            className="self-center text-l"
-                            color="danger"
-                            onClick={() => {
-                                setDeleting(true)
-
-                                fetch(`/api/v1/deleteConfig`, {
-                                    method: 'DELETE',
-                                    body: JSON.stringify({
-                                        apiKey: apiKey,
-                                        id: config.id
-                                    }),
-                                    headers: {
-                                        "Content-Type": "application/json"
-                                    }
-                                })
-                                    .then(() => updateConfigs())
-                                    .catch(err => {
-                                        console.error(err)
-                                    })
-                                    .finally(() => setDeleting(false))
-                            }}
-                        >
-                            {deleting ? <FaSpinner className="animate-spin" /> : <FaTrash />}
-                        </Button>
+                    {
+                        authorized && <AdminCardOptions
+                            updateConfigs={updateConfigs}
+                            apiKey={apiKey}
+                            config={config}
+                        />
                     }
 
                     <Button
