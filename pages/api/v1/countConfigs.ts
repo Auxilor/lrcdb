@@ -25,23 +25,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
   const plugin = getSingle(req.query.plugin)
   let query = getSingle(req.query.query) || ""
-  const limit: number = parseInt(getSingle(req.query.limit) || "150") // Jank
-  const skip: number = parseInt(getSingle(req.query.skip) || "0") // Jank
   const apiKey = getSingle(req.query.apiKey) || ""
 
   const showPrivate = await getAuthLevel(apiKey) > 0
 
-  const configs = await prisma.config.findMany({
-    skip: skip,
-    take: limit,
-    orderBy: [
-      {
-        downloads: 'desc'
-      },
-      {
-        views: 'desc'
-      }
-    ],
+  const configs = await prisma.config.count({
     where: {
       plugin: {
         contains: plugin,
@@ -62,12 +50,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   })
 
-  const filtered = configs.map(config => {
-    const { contents, ...rest } = config
-    return rest
-  })
-
   res.status(200).json({
-    configs: filtered
+    amount: configs
   })
 }

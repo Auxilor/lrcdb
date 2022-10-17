@@ -1,5 +1,8 @@
 
+import { Button } from "@mui/joy";
 import { useEffect, useState } from "react";
+import { FaSpinner } from "react-icons/fa";
+import { useInView } from "react-intersection-observer";
 import ConfigCard from "./ConfigCard";
 
 export default function ConfigGrid(props) {
@@ -7,6 +10,14 @@ export default function ConfigGrid(props) {
     const apiKey = props.apiKey
     const updateConfigs = props.updateConfigs
     const setConfigPreview = props.setConfigPreview
+    const loadMore = props.loadMore
+    const isShowingAll = props.isShowingAll
+
+    const { ref, inView } = useInView()
+
+    useEffect(() => {
+        loadMore()
+    }, [inView])
 
     const [authorized, setAuthorized] = useState(false)
 
@@ -31,6 +42,16 @@ export default function ConfigGrid(props) {
                     authorized={authorized}
                 />
             })}
+
+            {
+                !isShowingAll &&
+                <div
+                    ref={ref}   
+                    className="place-self-center animate-spin"
+                >
+                    <FaSpinner />
+                </div>
+            }
         </div>
     )
 }
