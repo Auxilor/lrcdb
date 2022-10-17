@@ -1,7 +1,4 @@
-# LCRDB
+# lrcdb
+libreforge config database
 
-<hr>
-
-Ready made configs for Libreforge plugins. Just run one command on your server and the config is yours!
-
-https://lrcdb.auxilor.io/
+An open online database of config for all [libreforge](https://github.com/Auxilor/libreforge)-based plugins
