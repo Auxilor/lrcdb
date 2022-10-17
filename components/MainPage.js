@@ -43,6 +43,10 @@ export default function MainPage(props) {
         updateConfigs()
     }, [plugin, query, apiKey, page])
 
+    useEffect(() => {
+        setPage(1)
+    }, [plugin, query, apiKey])
+
     return (
         <div className="md:grid md:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-7 overflow-scroll md:overflow-hidden">
             <div className="md:col-start-1 p-10 flex flex-col place-items-center">
