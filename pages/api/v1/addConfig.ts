@@ -75,43 +75,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             }
         })
 
-        const amount = await prisma.config.count({
-            where: {
-                name: {
-                    equals: name
-                },
-                plugin: {
-                    equals: plugin,
-                    mode: 'insensitive'
-                }
-            }
-        })
-
         if (existing != null) {
             res.status(400).json({
-                message: `Config with identical name already exists for plugin!`
+                message: `There's already a config called ${name} for ${plugin}, pick something else!`
             })
-
-            // Perform cleanup on the database
-            if (amount > 1) {
-                await prisma.config.deleteMany({
-                    where: {
-                        name: {
-                            equals: name
-                        },
-                        plugin: {
-                            equals: plugin,
-                            mode: 'insensitive'
-                        }
-                    }
-                })
-
-                await prisma.config.create({
-                    data: {
-                        ...existing
-                    }
-                })
-            }
 
             return
         }
@@ -141,7 +108,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
         } else {
             res.status(400).json({
-                message: `Identical config already exists!`
+                message: `Identical config already exists under a different name!`
             })
             return
         }
