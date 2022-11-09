@@ -100,10 +100,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                     }
                 })
 
+                const data = { ...existing }
+                data.isPrivate = false
+
                 await prisma.config.create({
-                    data: {
-                        ...existing
-                    }
+                    data: data
                 })
 
                 return
