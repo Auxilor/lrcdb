@@ -68,47 +68,36 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 plugin: {
                     equals: plugin,
                     mode: 'insensitive'
-                }
+                },
+                isPrivate: false
             }
         })
 
         if (existing != null) {
-            const isExistingPrivate = existing.isPrivate
-            const isNewPrivate = isPrivate
+            res.status(400).json({
+                message: `Config with identical name already exists for plugin!`
+            })
 
-            if (!isNewPrivate && isExistingPrivate) {
-                await prisma.config.delete({
-                    where: {
-                        id: existing.id
+            // Perform cleanup on the database
+            await prisma.config.deleteMany({
+                where: {
+                    name: {
+                        equals: name
+                    },
+                    plugin: {
+                        equals: plugin,
+                        mode: 'insensitive'
                     }
-                })
-            } else {
-                res.status(400).json({
-                    message: `Config with identical name already exists for plugin!`
-                })
+                }
+            })
 
-                // Perform cleanup on the database
-                await prisma.config.deleteMany({
-                    where: {
-                        name: {
-                            equals: name
-                        },
-                        plugin: {
-                            equals: plugin,
-                            mode: 'insensitive'
-                        }
-                    }
-                })
+            await prisma.config.create({
+                data: { 
+                    ...existing
+                }
+            })
 
-                const data = { ...existing }
-                data.isPrivate = false
-
-                await prisma.config.create({
-                    data: data
-                })
-
-                return
-            }
+            return
         }
     }
 
