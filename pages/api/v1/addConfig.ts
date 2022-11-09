@@ -2,6 +2,9 @@ import yaml from "js-yaml"
 import { NextApiRequest, NextApiResponse } from "next"
 import { prisma } from "../../../lib/db"
 
+// Will prevent identically named configs existing for the same plugin
+const IS_STRICT_DUPE_CHECKING = true
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'POST') {
         res.status(400).json({
@@ -56,21 +59,67 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return
     }
 
+    if (IS_STRICT_DUPE_CHECKING) {
+        const existing = await prisma.config.findFirst({
+            where: {
+                name: {
+                    equals: name
+                },
+                plugin: {
+                    equals: plugin,
+                    mode: 'insensitive'
+                }
+            }
+        })
+
+        if (existing != null) {
+            const isExistingPrivate = existing.isPrivate
+            const isNewPrivate = isPrivate
+
+            if (!isNewPrivate && isExistingPrivate) {
+                await prisma.config.delete({
+                    where: {
+                        id: existing.id
+                    }
+                })
+            } else {
+                res.status(400).json({
+                    message: `Config with identical name already exists for plugin!`
+                })
+
+                // Perform cleanup on the database
+                await prisma.config.deleteMany({
+                    where: {
+                        name: {
+                            equals: name
+                        },
+                        plugin: {
+                            equals: plugin,
+                            mode: 'insensitive'
+                        }
+                    }
+                })
+
+                await prisma.config.create({
+                    data: {
+                        ...existing
+                    }
+                })
+
+                return
+            }
+        }
+    }
+
     const existing = await prisma.config.findFirst({
         where: {
-            AND: [
-                {
-                    contents: {
-                        equals: contents
-                    }
-                },
-                {
-                    plugin: {
-                        equals: plugin,
-                        mode: 'insensitive'
-                    }
-                }
-            ]
+            contents: {
+                equals: contents
+            },
+            plugin: {
+                equals: plugin,
+                mode: 'insensitive'
+            }
         }
     })
 
