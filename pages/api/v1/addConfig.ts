@@ -14,7 +14,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const name = req.body.name
-    const plugin = req.body.plugin
+    const plugin: string = req.body.plugin
     const contents = req.body.contents
     const author = req.body.author || "Unknown Author"
     const isPrivate = req.body.isPrivate || false
@@ -50,7 +50,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const loaded: any = yaml.load(contents) // js-yaml doesn't have typing
         if (loaded.effects === undefined || loaded.conditions === undefined) {
-            throw new Error('Missing effects/conditions!')
+            if (plugin.toLowerCase() !== 'ecoskills') {
+                throw new Error('Missing effects/conditions!')
+            }
         }
     } catch (e) {
         res.status(400).json({
@@ -92,7 +94,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             })
 
             await prisma.config.create({
-                data: { 
+                data: {
                     ...existing
                 }
             })
