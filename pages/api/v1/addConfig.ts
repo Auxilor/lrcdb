@@ -26,9 +26,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return
     }
 
-    if (name.length > 40 || name.includes(" ")) {
+    if (name.length > 40) {
         res.status(400).json({
-            message: "Invalid config name! (Too long, contains spaces)"
+            message: "Invalid config name! (Too long)"
+        })
+        return
+    }
+
+    if (!/[a-z0-9/._-]+/.test(name)) {
+        res.status(400).json({
+            message: "Invalid config name! (Must be a-z, 9-0, and _ only)"
         })
         return
     }
@@ -56,7 +63,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         }
     } catch (e) {
         res.status(400).json({
-            message: "Invalid config!"
+            message: `Invalid config! Make sure you have effects and conditions defined.`
         })
         return
     }
