@@ -1,6 +1,20 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { prisma } from "../../../lib/db"
 
+const DISGUSTING_MAP = {
+  'ecoenchants': 'enchant',
+  'ecobosses': 'boss',
+  'talismans': 'talisman',
+  'ecoarmor': 'set',
+  'ecoitems': 'item',
+  'reforges': 'reforge',
+  'ecoskills': 'skill',
+  'boosters': 'booster',
+  'ecopets': 'pet',
+  'ecojobs': 'job',
+  'actions': 'action'
+}
+
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'GET') {
     res.status(400).json({
@@ -56,7 +70,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
   })
 
+  const jank = config.plugin.toLowerCase() as keyof typeof DISGUSTING_MAP
+
   res.status(200).json({
-    config: config
+    config: {
+      ...config,
+      category: config.category || DISGUSTING_MAP[jank] 
+    }
   })
 }
