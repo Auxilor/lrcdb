@@ -18,6 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const contents = req.body.contents
     const author = req.body.author || "Unknown Author"
     const isPrivate = req.body.isPrivate || false
+    const category  = req.body.category || null
 
     if (name === undefined) {
         res.status(400).json({
@@ -33,7 +34,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         return
     }
 
-    if (!/[a-z0-9/._-]+/.test(name)) {
+    if (!/[a-z0-9_]+/.test(name)) {
         res.status(400).json({
             message: "Invalid config name! (Must be a-z, 9-0, and _ only)"
         })
@@ -127,7 +128,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             plugin: plugin,
             contents: contents,
             author: author,
-            isPrivate: isPrivate
+            isPrivate: isPrivate,
+            category: category
         }
     })
 

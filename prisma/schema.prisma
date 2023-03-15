@@ -17,6 +17,7 @@ model Config {
   downloads Int     @default(0)
   views     Int     @default(0)
   isPrivate Boolean @default(false)
+  category  String?
 }
 
 model User {
