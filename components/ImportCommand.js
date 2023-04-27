@@ -4,7 +4,7 @@ import { useState } from "react"
 export default function ImportCommand(props) {
     const config = props.config
     const close = props.close
-    const command = `/${config.plugin.toLowerCase()} import ${config.id}`
+    const command = `/lrcdb import ${config.id}`
     const [copied, setCopied] = useState(false)
 
     return (
