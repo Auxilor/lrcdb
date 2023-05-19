@@ -42,7 +42,7 @@ export const plugins: Plugin[] = [
     },
     {
         name: "EcoJobs",
-        image: "https://i.imgur.com/HgHcjYe.png"
+        image: "https://i.imgur.com/lfiEn6H.png"
     },
     {
         name: "Actions",
