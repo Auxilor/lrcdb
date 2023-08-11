@@ -12,7 +12,8 @@ const DISGUSTING_MAP = {
   'boosters': 'booster',
   'ecopets': 'pet',
   'ecojobs': 'job',
-  'actions': 'action'
+  'actions': 'action',
+  'ecoquests': 'task'
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -75,7 +76,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
   res.status(200).json({
     config: {
       ...config,
-      category: config.category || DISGUSTING_MAP[jank] 
+      category: config.category || DISGUSTING_MAP[jank]
     }
   })
 }
