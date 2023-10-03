@@ -1,5 +1,5 @@
-import { NextApiRequest, NextApiResponse } from "next"
-import { getAuthLevel } from "../../../lib/auth"
+import {NextApiRequest, NextApiResponse} from "next"
+import {getAuthLevel} from "../../../lib/auth"
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
     if (req.method !== 'GET') {

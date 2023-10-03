@@ -25,6 +25,8 @@
   "include": [
     "next-env.d.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "pages/api/v1/configs.ts", "components/ConfigCard.js"  ]
+    "**/*.tsx",
+    "pages/api/v1/configs.ts",
+    "components/ConfigCard.js"
+  ]
 }

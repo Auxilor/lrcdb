@@ -1,5 +1,5 @@
 import crypto from 'crypto'
-import { prisma } from "./db"
+import {prisma} from "./db"
 
 const salt = '7314c648755f78e3d42b1421c19e00d4f3d9c78949787852c20b6fd607a42efb'
 

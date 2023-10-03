@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import ConfigPreview from "../components/ConfigPreview";
 import MainPage from "../components/MainPage";
 
@@ -30,9 +30,9 @@ export default function Home() {
       <title>lrcdb</title>
 
       {
-        showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview} />
+        showing != null && <ConfigPreview config={showing} setConfigPreview={setConfigPreview}/>
       }
-      <MainPage setConfigPreview={setConfigPreview} />
+      <MainPage setConfigPreview={setConfigPreview}/>
     </div>
   )
 }

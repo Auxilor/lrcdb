@@ -1,6 +1,6 @@
 import yaml from "js-yaml"
-import { NextApiRequest, NextApiResponse } from "next"
-import { prisma } from "../../../lib/db"
+import {NextApiRequest, NextApiResponse} from "next"
+import {prisma} from "../../../lib/db"
 
 // Will prevent identically named configs existing for the same plugin
 const IS_STRICT_DUPE_CHECKING = true
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const contents = req.body.contents
     const author = req.body.author || "Unknown Author"
     const isPrivate = req.body.isPrivate || false
-    const category  = req.body.category || null
+    const category = req.body.category || null
 
     if (name === undefined) {
         res.status(400).json({
