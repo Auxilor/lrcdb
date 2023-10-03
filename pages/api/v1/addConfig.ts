@@ -58,7 +58,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     try {
         const loaded: any = yaml.load(contents) // js-yaml doesn't have typing
         if (loaded.effects === undefined || loaded.conditions === undefined) {
-            if (plugin.toLowerCase() !== 'ecoskills') {
+            if (plugin.toLowerCase() !== 'ecoskills' && plugin.toLowerCase() !== 'ecoquests') {
                 throw new Error('Missing effects/conditions!')
             }
         }
