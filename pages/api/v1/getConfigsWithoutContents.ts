@@ -31,15 +31,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const showPrivate = await getAuthLevel(apiKey) > 0
 
-    await prisma.config.deleteMany({
-        where: {
-            plugin: {
-                contains: "ecobosses",
-                mode: 'insensitive'
-            },
-        }
-    })
-
     const configs = await prisma.config.findMany({
         skip: skip,
         take: limit,
