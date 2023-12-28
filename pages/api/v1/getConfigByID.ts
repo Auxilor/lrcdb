@@ -3,7 +3,7 @@ import {prisma} from "../../../lib/db"
 
 const DISGUSTING_MAP = {
     'ecoenchants': 'enchant',
-    'ecobosses': 'boss',
+    'ecomobs': 'mob',
     'talismans': 'talisman',
     'ecoarmor': 'set',
     'ecoitems': 'item',

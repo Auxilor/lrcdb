@@ -9,8 +9,8 @@ export const plugins: Plugin[] = [
         image: "https://i.imgur.com/bF6y4xz.png"
     },
     {
-        name: "EcoBosses",
-        image: "https://i.imgur.com/NfHn90A.png"
+        name: "EcoMobs",
+        image: "https://i.imgur.com/fvo8fBv.png"
     },
     {
         name: "Talismans",
