@@ -1,19 +1,19 @@
 generator client {
-  provider      = "prisma-client-js"
-  binaryTargets = ["native", "linux-musl"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mongodb"
-  url      = env("DATABASE_URL")
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Config {
-  id        String  @id @default(uuid()) @map("_id")
+  id        String  @id @default(uuid())
   name      String
   plugin    String
   author    String  @default("Unknown Author")
-  contents  String
+  contents  String  @db.Text()
   downloads Int     @default(0)
   views     Int     @default(0)
   isPrivate Boolean @default(false)
@@ -21,7 +21,7 @@ model Config {
 }
 
 model User {
-  id         String @id @default(uuid()) @map("_id")
+  id         String @id @default(uuid())
   username   String
   apiKeyHash String
   level      Int
