@@ -3,17 +3,17 @@ generator client {
 }
 
 datasource db {
-  provider     = "mysql"
-  url          = env("DATABASE_URL")
-  relationMode = "prisma"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+  // relationMode = "prisma"
 }
 
 model Config {
-  id        String  @id @default(uuid())
+  id        String  @id @default(uuid()) @map("_id")
   name      String
   plugin    String
   author    String  @default("Unknown Author")
-  contents  String  @db.Text()
+  contents  String //@db.Text()
   downloads Int     @default(0)
   views     Int     @default(0)
   isPrivate Boolean @default(false)
@@ -21,7 +21,7 @@ model Config {
 }
 
 model User {
-  id         String @id @default(uuid())
+  id         String @id @default(uuid()) @map("_id")
   username   String
   apiKeyHash String
   level      Int
