@@ -18,6 +18,10 @@ model Config {
   views     Int     @default(0)
   isPrivate Boolean @default(false)
   category  String?
+
+  @@index([plugin])
+  @@index([name])
+  @@index([isPrivate])
 }
 
 model User {
