@@ -1,0 +1,21 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(superpowers:brainstorming)",
+      "WebSearch",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Bash(git rev-parse:*)",
+      "Bash(bun install)",
+      "Bash(bunx prisma generate:*)",
+      "Bash(git -C /Users/will/WebstormProjects/lrcdb status)",
+      "Bash(git -C /Users/will/WebstormProjects/lrcdb diff --stat)",
+      "Bash(git -C /Users/will/WebstormProjects/lrcdb log --oneline -5)",
+      "Bash(git rm:*)",
+      "Bash(git rebase:*)",
+      "Bash(GIT_EDITOR=true git rebase:*)"
+    ]
+  }
+}
