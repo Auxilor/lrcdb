@@ -1,74 +1,120 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useInfiniteQuery, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { Config, ConfigWithoutContents } from "@/lib/types";
-import { SearchPane } from "./search-pane";
+import { SearchBar } from "./search-bar";
+import { PluginFilter } from "./plugin-filter";
 import { ConfigGrid } from "./config-grid";
-import { MoreOptions } from "./more-options";
 import { ConfigPreview } from "./config-preview";
+import { SettingsPopover } from "./settings-popover";
 
-const PAGE_SIZE = 50;
+const PAGE_SIZE = 24;
+
+function useDebouncedValue<T>(value: T, delay: number): T {
+  const [debounced, setDebounced] = useState(value);
+  useEffect(() => {
+    const id = setTimeout(() => setDebounced(value), delay);
+    return () => clearTimeout(id);
+  }, [value, delay]);
+  return debounced;
+}
+
+async function fetchConfigs({
+  plugin,
+  query,
+  apiKey,
+  skip,
+}: {
+  plugin: string;
+  query: string;
+  apiKey: string;
+  skip: number;
+}): Promise<{ configs: ConfigWithoutContents[] }> {
+  const params = new URLSearchParams({
+    plugin,
+    query,
+    apiKey,
+    limit: String(PAGE_SIZE),
+    skip: String(skip),
+  });
+  const res = await fetch(`/api/v2/configs?${params}`);
+  return res.json();
+}
+
+async function fetchCount({
+  plugin,
+  query,
+  apiKey,
+}: {
+  plugin: string;
+  query: string;
+  apiKey: string;
+}): Promise<{ amount: number }> {
+  const params = new URLSearchParams({ plugin, query, apiKey });
+  const res = await fetch(`/api/v2/configs/count?${params}`);
+  return res.json();
+}
 
 export function MainPage() {
-  const [configs, setConfigs] = useState<ConfigWithoutContents[]>([]);
-  const [amount, setAmount] = useState(0);
   const [plugin, setPlugin] = useState("");
   const [query, setQuery] = useState("");
   const [apiKey, setApiKey] = useState("");
-  const [page, setPage] = useState(1);
-  const [isShowingAll, setIsShowingAll] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [authorized, setAuthorized] = useState(false);
   const [showing, setShowing] = useState<Config | null>(null);
+  const queryClient = useQueryClient();
 
-  const updateConfigs = useCallback(() => {
-    setIsLoading(true);
-    fetch(
-      `/api/v2/configs?plugin=${plugin}&query=${query}&apiKey=${apiKey}&limit=${PAGE_SIZE * page}`
-    )
-      .then((res) => res.json())
-      .then((data) => setConfigs(data.configs))
-      .catch((err) => console.error(err))
-      .finally(() => setIsLoading(false));
+  const debouncedApiKey = useDebouncedValue(apiKey, 500);
 
-    fetch(
-      `/api/v2/configs/count?plugin=${plugin}&query=${query}&apiKey=${apiKey}`
-    )
-      .then((res) => res.json())
-      .then((data) => {
-        setAmount(data.amount);
-        if (data.amount === 0) {
-          setIsShowingAll(true);
-        } else {
-          setIsShowingAll(data.amount < PAGE_SIZE * (page - 1));
-        }
-      })
-      .catch((err) => console.error(err));
-  }, [plugin, query, apiKey, page]);
+  const { data: authData } = useQuery({
+    queryKey: ["authLevel", debouncedApiKey],
+    queryFn: async () => {
+      const res = await fetch(`/api/v2/auth/level?apiKey=${debouncedApiKey}`);
+      return res.json() as Promise<{ level: number }>;
+    },
+  });
 
-  const loadMore = useCallback(() => {
-    setPage((p) => p + 1);
-  }, []);
+  const authorized = (authData?.level ?? 0) > 0;
 
-  useEffect(() => {
-    fetch(`/api/v2/auth/level?apiKey=${apiKey}`)
-      .then((res) => res.json())
-      .then((data) => setAuthorized(data.level > 0))
-      .catch((err) => console.error(err));
-  }, [apiKey]);
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useInfiniteQuery({
+    queryKey: ["configs", plugin, query, debouncedApiKey],
+    queryFn: ({ pageParam = 0 }) =>
+      fetchConfigs({ plugin, query, apiKey: debouncedApiKey, skip: pageParam }),
+    getNextPageParam: (lastPage, allPages) => {
+      const totalFetched = allPages.reduce(
+        (sum, page) => sum + page.configs.length,
+        0
+      );
+      if (lastPage.configs.length < PAGE_SIZE) return undefined;
+      return totalFetched;
+    },
+    initialPageParam: 0,
+  });
 
-  useEffect(() => {
-    updateConfigs();
-  }, [updateConfigs]);
+  const { data: countData } = useQuery({
+    queryKey: ["configCount", plugin, query, debouncedApiKey],
+    queryFn: () => fetchCount({ plugin, query, apiKey: debouncedApiKey }),
+  });
 
-  useEffect(() => {
-    setPage(1);
-  }, [plugin, query, apiKey]);
+  const configs = Array.from(
+    new Map(
+      (data?.pages.flatMap((page) => page.configs) ?? []).map((c) => [c.id, c])
+    ).values()
+  );
+  const amount = countData?.amount ?? 0;
+
+  const invalidateConfigs = useCallback(() => {
+    queryClient.invalidateQueries({ queryKey: ["configs"] });
+    queryClient.invalidateQueries({ queryKey: ["configCount"] });
+  }, [queryClient]);
 
   const escFunction = useCallback((event: KeyboardEvent) => {
-    if (event.key === "Escape") {
-      setShowing(null);
-    }
+    if (event.key === "Escape") setShowing(null);
   }, []);
 
   useEffect(() => {
@@ -77,55 +123,66 @@ export function MainPage() {
   }, [escFunction]);
 
   return (
-    <>
+    <div className="relative z-10 min-h-screen flex flex-col">
       {showing && (
-        <ConfigPreview
-          config={showing}
-          setConfigPreview={setShowing}
-        />
+        <ConfigPreview config={showing} onClose={() => setShowing(null)} />
       )}
-      <div className="md:grid md:grid-cols-3 lg:grid-cols-5 2xl:grid-cols-7 overflow-scroll md:overflow-hidden">
-        <div className="md:col-start-1 p-10 flex flex-col place-items-center">
-          <h1 className="text-center text-7xl font-sans">lrcdb</h1>
-          <p className="text-center text-md font-sans">
-            libreforge config database
-          </p>
 
-          <SearchPane
-            plugin={plugin}
-            setPlugin={setPlugin}
-            setQuery={setQuery}
+      {/* Header */}
+      <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur-xl">
+        <div className="mx-auto container px-4 sm:px-6 lg:px-8">
+          <div className="flex h-14 items-center justify-between gap-4">
+            <div className="flex items-center gap-3 shrink-0">
+              <h1 className="font-display text-xl font-bold tracking-tight text-amber">
+                lrcdb
+              </h1>
+              <span className="hidden sm:block text-xs text-muted-foreground font-mono mt-0.5">
+                libreforge config database
+              </span>
+            </div>
+
+            <SearchBar onSearch={setQuery} />
+
+            <SettingsPopover apiKey={apiKey} setApiKey={setApiKey} />
+          </div>
+        </div>
+      </header>
+
+      {/* Plugin filter strip */}
+      <div className="border-b border-border bg-surface/50">
+        <div className="mx-auto container px-4 sm:px-6 lg:px-8">
+          <PluginFilter
+            selected={plugin}
+            onSelect={setPlugin}
             amount={amount}
             isLoading={isLoading}
           />
-
-          <MoreOptions setApiKey={setApiKey} apiKey={apiKey} />
-
-          <a
-            href="https://gamersupps.gg/Auxilor"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4"
-          >
-            <img
-              src="https://i.imgur.com/7mFhlQO.png"
-              alt="GamerSupps, Code Auxilor"
-              className="rounded-xl w-full"
-            />
-          </a>
-        </div>
-        <div className="md:col-start-2 md:col-span-full p-5 md:overflow-scroll h-screen bg-slate-100">
-          <ConfigGrid
-            configs={configs}
-            setConfigPreview={setShowing}
-            apiKey={apiKey}
-            updateConfigs={updateConfigs}
-            loadMore={loadMore}
-            isShowingAll={isShowingAll}
-            authorized={authorized}
-          />
         </div>
       </div>
-    </>
+
+      {/* Main grid */}
+      <main className="flex-1 mx-auto w-full container px-4 sm:px-6 lg:px-8 py-6">
+        <ConfigGrid
+          configs={configs}
+          onPreview={setShowing}
+          apiKey={apiKey}
+          authorized={authorized}
+          invalidateConfigs={invalidateConfigs}
+          isLoading={isLoading}
+          hasNextPage={hasNextPage ?? false}
+          isFetchingNextPage={isFetchingNextPage}
+          onLoadMore={fetchNextPage}
+        />
+      </main>
+
+      {/* Footer */}
+      <footer className="border-t border-border py-4">
+        <div className="mx-auto container px-4 sm:px-6 lg:px-8">
+          <p className="text-center text-xs text-muted-foreground">
+            Configurations here are not officially supported. Download at your own risk.
+          </p>
+        </div>
+      </footer>
+    </div>
   );
 }

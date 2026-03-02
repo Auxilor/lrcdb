@@ -30,10 +30,13 @@ const CATEGORY_MAP: Record<string, string> = {
   ecoquests: "task",
 };
 
+const UNKNOWN_PLUGIN: Plugin = { name: "Unknown", image: "" };
+
 export function getPluginByName(name: string): Plugin {
-  return plugins.find(
-    (pl) => pl.name.toLowerCase() === name.toLowerCase()
-  )!;
+  return (
+    plugins.find((pl) => pl.name.toLowerCase() === name.toLowerCase()) ??
+    UNKNOWN_PLUGIN
+  );
 }
 
 export function getDefaultCategory(plugin: string): string {

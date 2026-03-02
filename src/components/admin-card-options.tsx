@@ -3,67 +3,62 @@
 import { useState } from "react";
 import { Share, Trash2, Loader2 } from "lucide-react";
 import type { ConfigWithoutContents } from "@/lib/types";
-import { Button } from "@/components/ui/button";
 
 interface AdminCardOptionsProps {
   config: ConfigWithoutContents;
   apiKey: string;
-  updateConfigs: () => void;
+  invalidateConfigs: () => void;
 }
 
 export function AdminCardOptions({
   config,
   apiKey,
-  updateConfigs,
+  invalidateConfigs,
 }: AdminCardOptionsProps) {
   const [deleting, setDeleting] = useState(false);
   const [publicizing, setPublicizing] = useState(false);
 
   return (
-    <div className="self-center flex flex-row gap-2">
+    <div className="flex gap-1">
       {config.isPrivate && (
-        <Button
-          variant="outline"
-          size="sm"
-          className="text-green-600 border-green-600"
+        <button
           onClick={() => {
             setPublicizing(true);
             fetch(`/api/v2/configs/${config.id}/publicize?apiKey=${apiKey}`, {
               method: "PATCH",
             })
-              .then(() => updateConfigs())
+              .then(() => invalidateConfigs())
               .catch((err) => console.error(err))
               .finally(() => setPublicizing(false));
           }}
+          className="h-7 w-7 rounded-md flex items-center justify-center text-green-600 dark:text-green-400 hover:bg-green-500/10 border border-green-500/25 hover:border-green-500/40 transition-all"
         >
           {publicizing ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Share className="h-4 w-4" />
+            <Share className="h-3.5 w-3.5" />
           )}
-        </Button>
+        </button>
       )}
 
-      <Button
-        variant="outline"
-        size="sm"
-        className="text-red-600 border-red-600"
+      <button
         onClick={() => {
           setDeleting(true);
           fetch(`/api/v2/configs/${config.id}?apiKey=${apiKey}`, {
             method: "DELETE",
           })
-            .then(() => updateConfigs())
+            .then(() => invalidateConfigs())
             .catch((err) => console.error(err))
             .finally(() => setDeleting(false));
         }}
+        className="h-7 w-7 rounded-md flex items-center justify-center text-red-600 dark:text-red-400 hover:bg-red-500/10 border border-red-500/25 hover:border-red-500/40 transition-all"
       >
         {deleting ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
+          <Loader2 className="h-3.5 w-3.5 animate-spin" />
         ) : (
-          <Trash2 className="h-4 w-4" />
+          <Trash2 className="h-3.5 w-3.5" />
         )}
-      </Button>
+      </button>
     </div>
   );
 }
