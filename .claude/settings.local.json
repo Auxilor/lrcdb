@@ -15,7 +15,12 @@
       "Bash(git -C /Users/will/WebstormProjects/lrcdb log --oneline -5)",
       "Bash(git rm:*)",
       "Bash(git rebase:*)",
-      "Bash(GIT_EDITOR=true git rebase:*)"
+      "Bash(GIT_EDITOR=true git rebase:*)",
+      "Bash(ls:*)",
+      "Bash(git -C /Users/will/WebstormProjects/lrcdb add src/app/api/v1/)",
+      "Bash(git -C /Users/will/WebstormProjects/lrcdb diff --cached --stat)",
+      "Bash(bunx shadcn@latest init:*)",
+      "Bash(bunx shadcn@latest add:*)"
     ]
   }
 }
