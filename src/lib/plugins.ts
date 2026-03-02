@@ -1,18 +1,18 @@
 import type { Plugin } from "./types";
 
 export const plugins: Plugin[] = [
-  { name: "EcoEnchants", image: "https://i.imgur.com/bF6y4xz.png" },
-  { name: "EcoMobs", image: "https://i.imgur.com/fvo8fBv.png" },
-  { name: "Talismans", image: "https://i.imgur.com/B512GRQ.png" },
-  { name: "EcoArmor", image: "https://i.imgur.com/lJkjcQQ.png" },
-  { name: "EcoItems", image: "https://i.imgur.com/qJLnOW2.png" },
-  { name: "Reforges", image: "https://i.imgur.com/YEVnsGW.png" },
-  { name: "EcoSkills", image: "https://i.imgur.com/STRh0rl.png" },
-  { name: "Boosters", image: "https://i.imgur.com/cNsrhU9.png" },
-  { name: "EcoPets", image: "https://i.imgur.com/uflkTN3.png" },
-  { name: "EcoJobs", image: "https://i.imgur.com/lfiEn6H.png" },
-  { name: "Actions", image: "https://i.imgur.com/XBpZRQj.png" },
-  { name: "EcoQuests", image: "https://i.imgur.com/kcRIdiY.png" },
+  { name: "EcoEnchants", image: "/plugins/ecoenchants.png" },
+  { name: "EcoMobs", image: "/plugins/ecomobs.png" },
+  { name: "Talismans", image: "/plugins/talismans.png" },
+  { name: "EcoArmor", image: "/plugins/ecoarmor.png" },
+  { name: "EcoItems", image: "/plugins/ecoitems.png" },
+  { name: "Reforges", image: "/plugins/reforges.png" },
+  { name: "EcoSkills", image: "/plugins/ecoskills.png" },
+  { name: "Boosters", image: "/plugins/boosters.png" },
+  { name: "EcoPets", image: "/plugins/ecopets.png" },
+  { name: "EcoJobs", image: "/plugins/ecojobs.png" },
+  { name: "Actions", image: "/plugins/actions.png" },
+  { name: "EcoQuests", image: "/plugins/ecoquests.png" },
 ];
 
 const CATEGORY_MAP: Record<string, string> = {

@@ -22,6 +22,8 @@ model Config {
   @@index([plugin])
   @@index([name])
   @@index([isPrivate])
+  @@index([downloads(sort: Desc)])
+  @@index([views(sort: Desc)])
 }
 
 model User {
