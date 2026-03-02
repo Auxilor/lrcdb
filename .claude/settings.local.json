@@ -23,7 +23,9 @@
       "Bash(bunx shadcn@latest add:*)",
       "Bash(bun run build:*)",
       "Bash(bunx prisma db push:*)",
-      "Bash(bun add:*)"
+      "Bash(bun add:*)",
+      "Bash(git stash:*)",
+      "Bash(git push:*)"
     ]
   }
 }
