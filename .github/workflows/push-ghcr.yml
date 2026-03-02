@@ -6,18 +6,25 @@ on:
       - main
   workflow_dispatch:
 
+permissions:
+  packages: write
+
 jobs:
   build:
     name: 'Build'
     runs-on: ubuntu-latest
     steps:
       - name: "Build:checkout"
-        uses: actions/checkout@v2
-      - name: 'Build:dockerimage'
-        uses: docker/build-push-action@v4
+        uses: actions/checkout@v4
+      - name: 'Build:login'
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: "WillFP"
-          password: ${{ secrets.ACCESS_TOKEN }}
-          repository: auxilor/lrcdb
-          tags: latest
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: 'Build:dockerimage'
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/auxilor/lrcdb:latest
